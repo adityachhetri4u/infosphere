@@ -405,6 +405,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Priyanshu Goyal** - Full Stack Developer & AI Enthusiast
 - GitHub: [@Priyanshugoyal2301](https://github.com/Priyanshugoyal2301)
+**Aditya Chhetri** - Frontend developer & AI Enthusiast
+- Github: [@adityachhetri4u](https://github.com/adityachhetri4u)
 
 ---
 
