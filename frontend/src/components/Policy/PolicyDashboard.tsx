@@ -155,18 +155,32 @@ const PolicyDashboard: React.FC = () => {
     setIsAnalyzing(true);
     setPolicyAnalysis(null);
     
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8001'}/api/v1/policy/summarize`, {
-        method: 'POST',
-        body: formData,
-      });
+      let response: Response;
+      try {
+        response = await fetch(`${apiUrl}/api/v1/policy/summarize`, {
+          method: 'POST',
+          body: formData,
+        });
+      } catch (networkError: any) {
+        throw new Error(
+          `Cannot reach the backend server at ${apiUrl}. ` +
+          `Please make sure the backend is running. (${networkError.message})`
+        );
+      }
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to analyze PDF');
+        let detail = `Server error ${response.status}`;
+        try {
+          const errorData = await response.json();
+          detail = errorData.detail || detail;
+        } catch {}
+        throw new Error(detail);
       }
 
       const result = await response.json();
