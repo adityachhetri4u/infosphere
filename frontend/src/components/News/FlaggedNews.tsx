@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import { fetchAllNews, NewsArticle } from '../../services/newsApiService';
 import { Flag } from 'lucide-react';
+import NewspaperBorders from '../Layout/NewspaperBorders';
+import { ENABLE_NEWSPAPER_BORDERS } from '../../utils/newspaperBorders';
+import './FlaggedNews.css';
 
 interface FlaggedArticle {
   id: number;
@@ -342,24 +345,24 @@ const FlaggedNews: React.FC = () => {
   };
 
   const getScoreColorClass = (score: number): string => {
-    if (score >= 0.80) return 'bg-green-500';
-    if (score >= 0.65) return 'bg-yellow-500';
-    if (score >= 0.50) return 'bg-orange-500';
-    return 'bg-red-500';
+    if (score >= 0.80) return 'flagged-score score-verified';
+    if (score >= 0.65) return 'flagged-score score-watch';
+    if (score >= 0.50) return 'flagged-score score-caution';
+    return 'flagged-score score-flagged';
   };
 
   const getStatusBadgeClass = (status: string): string => {
     const statusColors: { [key: string]: string } = {
-      'verified': 'bg-green-100 text-green-800',
-      'debunked': 'bg-red-100 text-red-800',
-      'unreliable': 'bg-red-100 text-red-800',
-      'stock_photo': 'bg-yellow-100 text-yellow-800',
-      'future_dated': 'bg-red-100 text-red-800',
-      'not_found': 'bg-gray-100 text-gray-800',
-      'moderate': 'bg-yellow-100 text-yellow-800',
-      'unknown': 'bg-gray-100 text-gray-800'
+      'verified': 'flagged-status status-verified',
+      'debunked': 'flagged-status status-critical',
+      'unreliable': 'flagged-status status-critical',
+      'stock_photo': 'flagged-status status-watch',
+      'future_dated': 'flagged-status status-critical',
+      'not_found': 'flagged-status status-muted',
+      'moderate': 'flagged-status status-watch',
+      'unknown': 'flagged-status status-muted'
     };
-    return statusColors[status] || 'bg-gray-100 text-gray-800';
+    return statusColors[status] || 'flagged-status status-muted';
   };
 
   const formatDate = (dateString: string): string => {
@@ -377,193 +380,195 @@ const FlaggedNews: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-[1600px] mx-auto px-6 py-8">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-          <p className="mt-4 text-gray-600">Loading flagged news...</p>
+      <>
+        {ENABLE_NEWSPAPER_BORDERS && <NewspaperBorders />}
+        <div className={`newspaper-bg enhanced-typography flagged-news-page ${ENABLE_NEWSPAPER_BORDERS ? 'pt-10 pb-10 pl-8 pr-8' : 'py-8'}`}>
+          <div className="max-w-[1500px] mx-auto px-6">
+            <div className="newspaper-section text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+              <p className="italic-content mt-4 text-black">Loading flagged news under review...</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-[1600px] mx-auto px-6 py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-800">{error}</p>
-          <button
-            onClick={fetchFlaggedNews}
-            className="mt-4 btn-primary"
-          >
-            Retry
-          </button>
+      <>
+        {ENABLE_NEWSPAPER_BORDERS && <NewspaperBorders />}
+        <div className={`newspaper-bg enhanced-typography flagged-news-page ${ENABLE_NEWSPAPER_BORDERS ? 'pt-10 pb-10 pl-8 pr-8' : 'py-8'}`}>
+          <div className="max-w-[1500px] mx-auto px-6">
+            <div className="newspaper-section bg-red-50 border-4 border-red-900 p-6 text-center">
+              <p className="bold-title text-red-900">{error}</p>
+              <button
+                onClick={fetchFlaggedNews}
+                className="mt-4 btn-secondary"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto px-6 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-          <Flag size={36} strokeWidth={2.5} className="text-red-600" /> Flagged News Articles
-        </h1>
-        <p className="text-gray-600">
-          Low-credibility stories still under review (separate from the Live News feed)
-        </p>
-      </div>
-
-      {/* Statistics Dashboard */}
-      {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
-            <div className="text-sm font-medium text-gray-600">Total Flagged</div>
-            <div className="text-3xl font-bold text-gray-900 mt-2">
-              {stats.total_flagged}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
-            <div className="text-sm font-medium text-gray-600">Average Score</div>
-            <div className="text-3xl font-bold text-gray-900 mt-2">
-              {(stats.average_score * 100).toFixed(1)}%
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-            <div className="text-sm font-medium text-gray-600">Top Flag Reason</div>
-            <div className="text-lg font-semibold text-gray-900 mt-2">
-              {stats.common_reasons[0]?.reason.substring(0, 40) || 'N/A'}...
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Common Flag Reasons */}
-      {stats && stats.common_reasons.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Most Common Flag Reasons
-          </h2>
-          <div className="space-y-3">
-            {stats.common_reasons.map((reason, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center flex-1">
-                  <span className="text-sm font-medium text-gray-700">
-                    {index + 1}. {reason.reason}
-                  </span>
-                </div>
-                <div className="ml-4">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                    {reason.count} articles
-                  </span>
-                </div>
+    <>
+      {ENABLE_NEWSPAPER_BORDERS && <NewspaperBorders />}
+      <div className={`newspaper-bg enhanced-typography flagged-news-page ${ENABLE_NEWSPAPER_BORDERS ? 'pt-10 pb-10 pl-8 pr-8' : 'py-8'}`}>
+        <div className="max-w-[1500px] mx-auto px-6">
+          <div className="flagged-masthead mb-6">
+            <div className="border-t-4 border-b-4 border-black py-4 px-4">
+              <h1 className="bold-title flagged-main-title flex items-center justify-center gap-3">
+                <Flag size={34} strokeWidth={2.25} className="flagged-main-icon" />
+                THE FLAGGED PRESS BUREAU
+              </h1>
+              <div className="italic-content flagged-subline">
+                LOW CREDIBILITY DESK | UNDER REVIEW | VERIFICATION IN PROGRESS
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Flagged Articles List */}
-      <div className="space-y-6">
-        {flaggedArticles.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <div className="text-6xl mb-4">✅</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Flagged Articles
-            </h3>
-            <p className="text-gray-600">
-              All recent news articles have passed verification checks!
+            </div>
+            <p className="italic-content flagged-tagline mt-3 text-center">
+              "Independent review stream for questionable reports separated from live verified feeds"
             </p>
           </div>
-        ) : (
-          flaggedArticles.map((article) => (
-            <div
-              key={article.id}
-              className="bg-white rounded-lg shadow-md border-l-4 border-red-500 p-6 hover:shadow-lg transition-shadow"
-            >
-              {/* Article Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {article.title}
-                  </h3>
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    {article.url}
-                  </a>
+
+          {stats && (
+            <div className="newspaper-section mb-6">
+              <div className="bg-black text-white px-4 py-2">
+                <h2 className="newspaper-section-title bold-title text-base font-black text-white border-0 pb-0 mb-0 tracking-widest">
+                  FLAG MONITOR OVERVIEW
+                </h2>
+              </div>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="newspaper-card flagged-stat-card stat-critical">
+                  <div className="flagged-stat-label bold-title">Total Flagged</div>
+                  <div className="flagged-stat-value bold-title">{stats.total_flagged}</div>
+                  <div className="italic-content flagged-stat-meta">Stories pending editor review</div>
                 </div>
-                <div className="ml-4">
-                  <div
-                    className={`inline-flex items-center px-4 py-2 rounded-lg font-bold text-white ${getScoreColorClass(article.verification_score)}`}
-                  >
-                    {(article.verification_score * 100).toFixed(0)}%
+
+                <div className="newspaper-card flagged-stat-card stat-watch">
+                  <div className="flagged-stat-label bold-title">Average Score</div>
+                  <div className="flagged-stat-value bold-title">{(stats.average_score * 100).toFixed(1)}%</div>
+                  <div className="italic-content flagged-stat-meta">Below credibility threshold</div>
+                </div>
+
+                <div className="newspaper-card flagged-stat-card stat-muted">
+                  <div className="flagged-stat-label bold-title">Top Flag Reason</div>
+                  <div className="flagged-stat-reason bold-title">
+                    {stats.common_reasons[0]?.reason || 'No repeated reason'}
                   </div>
                 </div>
               </div>
+            </div>
+          )}
 
-              {/* Timestamp */}
-              <div className="text-sm text-gray-500 mb-4">
-                Flagged: {formatDate(article.flagged_at)}
+          {stats && stats.common_reasons.length > 0 && (
+            <div className="newspaper-section mb-6">
+              <div className="bg-black text-white px-4 py-2">
+                <h2 className="newspaper-section-title bold-title text-base font-black text-white border-0 pb-0 mb-0 tracking-widest">
+                  MOST COMMON FLAG REASONS
+                </h2>
               </div>
-
-              {/* Flag Reasons */}
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                  ⚠️ Flag Reasons:
-                </h4>
-                <ul className="space-y-1">
-                  {article.flag_reasons.map((reason, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-red-500 mr-2">•</span>
-                      <span className="text-sm text-gray-700">{reason}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Verification Checks Summary */}
-              <div className="border-t pt-4">
-                <h4 className="text-sm font-semibold text-gray-700 mb-3">
-                  Verification Checks:
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                  {Object.entries(article.checks_summary).map(([checkName, checkData]) => (
-                    <div key={checkName} className="text-center">
-                      <div className="text-xs text-gray-600 mb-1 capitalize">
-                        {checkName.replace(/_/g, ' ')}
-                      </div>
-                      <div
-                        className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getStatusBadgeClass(
-                          checkData.status
-                        )}`}
-                      >
-                        {(checkData.score * 100).toFixed(0)}%
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="p-4 space-y-3">
+                {stats.common_reasons.map((reason, index) => (
+                  <div key={index} className="flagged-reason-row">
+                    <span className="italic-content flagged-reason-text">
+                      {index + 1}. {reason.reason}
+                    </span>
+                    <span className="flagged-reason-count">{reason.count} article{reason.count > 1 ? 's' : ''}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          ))
-        )}
-      </div>
+          )}
 
-      {/* Refresh Button */}
-      <div className="mt-8 text-center">
-        <button
-          onClick={fetchFlaggedNews}
-          className="btn-secondary"
-        >
-          🔄 Refresh Flagged News
-        </button>
+          <div className="space-y-5">
+            {flaggedArticles.length === 0 ? (
+              <div className="newspaper-section p-8 text-center">
+                <div className="text-6xl mb-4">✅</div>
+                <h3 className="bold-title text-xl text-black mb-2">No Flagged Articles</h3>
+                <p className="italic-content text-black">
+                  All recent stories are currently passing verification checks.
+                </p>
+              </div>
+            ) : (
+              flaggedArticles.map((article) => (
+                <div
+                  key={article.id}
+                  className="newspaper-section flagged-article-wrap"
+                >
+                  <div className="flagged-article-head">
+                    <div className="flex-1 pr-4">
+                      <h3 className="bold-title flagged-article-title">
+                        {article.title}
+                      </h3>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="italic-content flagged-article-link"
+                      >
+                        {article.url}
+                      </a>
+                    </div>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <div className={getScoreColorClass(article.verification_score)}>
+                        {(article.verification_score * 100).toFixed(0)}%
+                      </div>
+                      <div className="italic-content flagged-timestamp">
+                        Flagged: {formatDate(article.flagged_at)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flagged-body-grid">
+                    <div className="flagged-reasons-panel">
+                      <h4 className="bold-title flagged-panel-title">Flag Reasons</h4>
+                      <ul className="space-y-1">
+                        {article.flag_reasons.map((reason, index) => (
+                          <li key={index} className="flagged-bullet-row">
+                            <span className="flagged-bullet" aria-hidden="true">■</span>
+                            <span className="italic-content flagged-reason-item">{reason}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="flagged-checks-panel">
+                      <h4 className="bold-title flagged-panel-title">Verification Checks</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                        {Object.entries(article.checks_summary).map(([checkName, checkData]) => (
+                          <div key={checkName} className="flagged-check-item">
+                            <div className="flagged-check-name">
+                              {checkName.replace(/_/g, ' ')}
+                            </div>
+                            <div className={getStatusBadgeClass(checkData.status)}>
+                              {(checkData.score * 100).toFixed(0)}%
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="mt-8 text-center">
+            <button
+              onClick={fetchFlaggedNews}
+              className="btn-secondary"
+            >
+              Refresh Flagged News
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

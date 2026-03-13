@@ -96,8 +96,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white border-4 border-black newspaper-bg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[11000] p-4 overflow-y-auto">
+      <div className="bg-white border-4 border-black newspaper-bg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative z-[11001]">
         {/* Header */}
         <div className="border-b-4 border-black bg-white p-6">
           <div className="flex justify-between items-center">

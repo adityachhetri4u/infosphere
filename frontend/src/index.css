@@ -14,6 +14,8 @@
     min-height: 100vh;
     background: var(--old-paper);
     background-image: 
+      /* Base scanned newspaper background */
+      var(--page-bg-image, none),
       /* Main torn paper texture */
       radial-gradient(circle at 15% 20%, var(--paper-stain-medium) 0%, transparent 25%),
       radial-gradient(circle at 85% 80%, var(--paper-stain-light) 0%, transparent 30%),
@@ -31,6 +33,7 @@
       linear-gradient(135deg, transparent 48%, rgba(192,168,130,0.04) 50%, transparent 52%),
       linear-gradient(45deg, transparent 47%, rgba(166,149,112,0.05) 49%, transparent 51%);
     background-size: 
+      cover,
       200px 180px,
       250px 220px,
       180px 160px,
@@ -43,6 +46,21 @@
       200px 180px,
       100% 100%,
       100% 100%;
+    background-repeat:
+      no-repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat,
+      repeat;
+    background-position: center;
     background-attachment: fixed;
     color: var(--vintage-ink);
     position: relative;
@@ -71,6 +89,7 @@
     --paper-crease: rgba(166,149,112,0.3);
     --paper-age-spot: rgba(192,168,130,0.6);
     --paper-fade: rgba(212,193,160,0.8);
+    --page-bg-image: url('./assets/newspaper_bg.png');
   }
 
   .btn-primary {
