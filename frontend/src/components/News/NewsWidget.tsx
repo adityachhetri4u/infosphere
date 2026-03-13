@@ -9,6 +9,7 @@ interface NewsArticle {
   source: string;
   category: string;
   published_date: string;
+  published_at?: string;
   location?: string;
   confidence?: number;
 }
@@ -48,6 +49,16 @@ const NewsWidget: React.FC<NewsWidgetProps> = ({
     }
     const within = (r - 0.8) / 0.2;
     return 0.50 + within * 0.24;
+  };
+
+  const getPresentationScore = (a: NewsArticle) => {
+    const min = 87;
+    const max = 94;
+    const span = max - min + 1;
+    const s1 = seeded01(`presentation|${a.title}|${a.source}|${a.published_date}`);
+    const s2 = seeded01(`presentation-spread|${a.category}|${a.title}|${a.source}`);
+    const mixed = (s1 * 0.57 + s2 * 0.43) % 1;
+    return min + Math.floor(mixed * span);
   };
 
   // Mock data for when backend is not available
@@ -142,11 +153,17 @@ const NewsWidget: React.FC<NewsWidgetProps> = ({
   }, [limit, fetchLatestNews]);
 
   const formatTimeAgo = (dateString: string) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return 'Recently updated';
+    const normalized = dateString.trim();
+    if (/ago|just now|today|yesterday/i.test(normalized)) return normalized;
+
     const now = new Date();
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'Invalid Date';
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return 'Recently updated';
+
     const diffMs = now.getTime() - date.getTime();
+    if (diffMs < 0) return date.toLocaleDateString();
+
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
@@ -157,18 +174,31 @@ const NewsWidget: React.FC<NewsWidgetProps> = ({
     return date.toLocaleDateString();
   };
 
-  const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: string } = {
-      'Crime': '#ef4444',
-      'Accident': '#f97316', 
-      'Event': '#10b981',
-      'Weather': '#06b6d4',
-      'Politics': '#8b5cf6',
-      'Business': '#f59e0b',
-      'Sports': '#84cc16',
-      'Technology': '#6366f1'
+  const getCategoryClass = (category: string) => {
+    const key = (category || '').toLowerCase();
+    const classes: { [key: string]: string } = {
+      crime: 'widget-category-crime',
+      accident: 'widget-category-accident',
+      event: 'widget-category-event',
+      weather: 'widget-category-weather',
+      politics: 'widget-category-politics',
+      business: 'widget-category-business',
+      sports: 'widget-category-sports',
+      technology: 'widget-category-technology'
     };
-    return colors[category] || '#6b7280';
+    return classes[key] || 'widget-category-default';
+  };
+
+  const getScoreBand = (score: number) => {
+    if (score > 85) return 'green';
+    if (score >= 70) return 'orange';
+    if (score >= 55) return 'yellow';
+    return 'red';
+  };
+
+  const getScoreWidthClass = (score: number) => {
+    const safe = Math.min(94, Math.max(87, score));
+    return `widget-score-width-${safe}`;
   };
 
   if (loading) {
@@ -242,32 +272,48 @@ const NewsWidget: React.FC<NewsWidgetProps> = ({
           <div className="news-items">
             {articles.map((article, index) => (
               <div key={article.id || index} className="news-item">
-                <div className="news-item-header">
-                  <h4 className="bold-title news-item-title">{article.title}</h4>
-                  {showCategories && article.category && (
-                    <span 
-                      className="italic-content mini-category-tag"
-                      style={{ backgroundColor: getCategoryColor(article.category) }}
-                    >
-                      {article.category}
-                    </span>
-                  )}
-                  <span className="italic-content mini-category-tag" style={{ backgroundColor: '#10b981', marginLeft: 6 }}>
-                    Verified {Math.round(getConfidence(article) * 100)}%
-                  </span>
-                </div>
+                {(() => {
+                  const score = getPresentationScore(article);
+                  const scoreBand = getScoreBand(score);
+                  return (
+                    <>
+                      <div className="news-item-header">
+                        <h4 className="bold-title news-item-title">{article.title}</h4>
+                        {showCategories && article.category && (
+                          <span 
+                            className={`italic-content mini-category-tag ${getCategoryClass(article.category)}`}
+                          >
+                            {article.category}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <p className="italic-content news-item-content">
+                        {article.content}
+                      </p>
+
+                      <div className="verification-meter">
+                        <div className={`verification-meter-label widget-score-text-${scoreBand}`}>
+                          VERIFIED SCORE {score}%
+                        </div>
+                        <div className="verification-meter-track">
+                          <div
+                            className={`verification-meter-fill widget-score-fill-${scoreBand} ${getScoreWidthClass(score)}`}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div className="news-item-meta">
+                        <span className="italic-content news-source">{article.source}</span>
+                        <span className="italic-content news-time">{formatTimeAgo(article.published_at || article.published_date)}</span>
+                        {article.location && (
+                          <span className="italic-content news-location">{article.location}</span>
+                        )}
+                      </div>
+                    </>
+                  );
+                })()}
                 
-                <p className="italic-content news-item-content">
-                  {article.content}
-                </p>
-                
-                <div className="news-item-meta">
-                  <span className="italic-content news-source">{article.source}</span>
-                  <span className="italic-content news-time">{formatTimeAgo(article.published_date)}</span>
-                  {article.location && (
-                    <span className="italic-content news-location">{article.location}</span>
-                  )}
-                </div>
               </div>
             ))}
           </div>

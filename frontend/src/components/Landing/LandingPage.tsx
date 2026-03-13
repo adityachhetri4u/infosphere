@@ -26,7 +26,6 @@ const LandingPage: React.FC = () => {
               THE INFOSPHERE HERALD
             </h1>
             <div className="flex justify-center items-center space-x-8 text-sm font-semibold text-black">
-              <span>ESTABLISHED 2025</span>
               <span className="border-l border-r border-black px-4">CIVIC INTELLIGENCE DAILY</span>
               <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>

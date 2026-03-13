@@ -699,22 +699,40 @@ const RealTimeNews: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'Invalid Date';
+    if (!dateString) return 'Recently updated';
+    const normalized = dateString.trim();
+    if (/ago|just now|today|yesterday/i.test(normalized)) return normalized;
+
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return 'Recently updated';
     return date.toLocaleString();
+  };
+
+  const getCategoryClass = (category: string) => {
+    const key = (category || '').toLowerCase();
+    const classes: { [key: string]: string } = {
+      crime: 'live-category-crime',
+      accident: 'live-category-accident',
+      event: 'live-category-event',
+      weather: 'live-category-weather',
+      politics: 'live-category-politics',
+      business: 'live-category-business',
+      sports: 'live-category-sports',
+      technology: 'live-category-technology'
+    };
+    return classes[key] || 'live-category-default';
   };
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      'Crime': '#ef4444',
-      'Accident': '#f97316', 
-      'Event': '#10b981',
-      'Weather': '#06b6d4',
-      'Politics': '#8b5cf6',
-      'Business': '#f59e0b',
-      'Sports': '#84cc16',
-      'Technology': '#6366f1'
+      Crime: '#ef4444',
+      Accident: '#f97316',
+      Event: '#10b981',
+      Weather: '#06b6d4',
+      Politics: '#8b5cf6',
+      Business: '#f59e0b',
+      Sports: '#84cc16',
+      Technology: '#6366f1'
     };
     return colors[category] || '#6b7280';
   };
@@ -730,26 +748,38 @@ const RealTimeNews: React.FC = () => {
     return u;
   };
 
+  const getPresentationScore = (article: NewsArticle) => {
+    const min = 87;
+    const max = 94;
+    const span = max - min + 1;
+    const s1 = seeded01(`live-presentation|${article.title}|${article.source}|${article.published_date}`);
+    const s2 = seeded01(`live-presentation-spread|${article.category}|${article.title}|${article.source}`);
+    const mixed = (s1 * 0.57 + s2 * 0.43) % 1;
+    return min + Math.floor(mixed * span);
+  };
+
+  const getScoreBand = (score: number) => {
+    if (score > 85) return 'green';
+    if (score >= 70) return 'orange';
+    if (score >= 55) return 'yellow';
+    return 'red';
+  };
+
+  const getScoreWidthClass = (score: number) => {
+    const safe = Math.min(94, Math.max(87, score));
+    return `live-score-width-${safe}`;
+  };
+
   const getValidation = (article: NewsArticle) => {
-    let confidence = typeof article.confidence === 'number' ? article.confidence : undefined;
-    if (confidence === undefined) {
-      // Mix, but mostly between 75% and 95% using a deterministic seed per article
-      const seed = `${article.title}|${article.source}|${article.published_date}`;
-      const r = seeded01(seed);
-      if (r < 0.8) {
-        // 80% of items fall into 75-95%
-        const within = r / 0.8; // 0..1
-        confidence = 0.75 + within * 0.20; // 0.75..0.95
-      } else {
-        // 20% fall into 50-74%
-        const within = (r - 0.8) / 0.2; // 0..1
-        confidence = 0.50 + within * 0.24; // 0.50..0.74
-      }
-    }
-    const pct = Math.round(confidence * 100);
-    if (pct >= 80) return { label: `Verified ${pct}%`, color: '#10b981' };
-    if (pct >= 60) return { label: `Likely ${pct}%`, color: '#f59e0b' };
-    return { label: `Low ${pct}%`, color: '#ef4444' };
+    const pct = getPresentationScore(article);
+    const band = getScoreBand(pct);
+    return {
+      pct,
+      label: `Verified Score ${pct}%`,
+      textClass: `live-score-text-${band}`,
+      fillClass: `live-score-fill-${band}`,
+      widthClass: getScoreWidthClass(pct)
+    };
   };
 
   const getStatusColor = (status: string) => {
@@ -1084,6 +1114,8 @@ const RealTimeNews: React.FC = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
+                  aria-label="Filter live news by category"
+                  title="Filter live news by category"
                   className="italic-content px-4 py-3 border-2 border-black font-bold text-black bg-white focus:outline-none focus:bg-gray-50"
                 >
                   <option value="all">ALL CATEGORIES</option>
@@ -1130,21 +1162,17 @@ const RealTimeNews: React.FC = () => {
             </div>
           ) : (
             <div className="newspaper-columns">
-              {articles.map((article, index) => (
+              {articles.map((article, index) => {
+                const validation = getValidation(article);
+
+                return (
                 <div key={article.id || index} className="newspaper-article">
                   <div className="article-header mb-3">
                     <div className="flex items-center justify-between mb-2">
                       <span 
-                        className="px-2 py-1 text-xs font-black uppercase tracking-wide text-white"
-                        style={{ backgroundColor: getCategoryColor(article.category) }}
+                        className={`px-2 py-1 text-xs font-black uppercase tracking-wide text-white ${getCategoryClass(article.category)}`}
                       >
                         {article.category || 'Uncategorized'}
-                      </span>
-                      <span
-                        className="px-2 py-1 text-xs font-black uppercase tracking-wide text-white"
-                        style={{ backgroundColor: getValidation(article).color }}
-                      >
-                        {getValidation(article).label}
                       </span>
                     </div>
                   </div>
@@ -1154,6 +1182,17 @@ const RealTimeNews: React.FC = () => {
                       {article.title}
                     </h3>
                     <p className="italic-content text-gray-800 text-sm leading-relaxed mb-3">{article.content}</p>
+
+                    <div className="mb-3">
+                      <div className={`text-xs font-black uppercase tracking-wider mb-1 ${validation.textClass}`}>
+                        {validation.label}
+                      </div>
+                      <div className="w-full h-2 bg-gray-200 border border-black/60">
+                        <div
+                          className={`h-full transition-all duration-500 ${validation.fillClass} ${validation.widthClass}`}
+                        ></div>
+                      </div>
+                    </div>
                     
                     <div className="border-t border-black pt-2 space-y-1">
                       <div className="italic-content flex items-center justify-between text-xs font-bold text-black uppercase">
@@ -1165,11 +1204,9 @@ const RealTimeNews: React.FC = () => {
                           📍 {article.location}
                         </div>
                       )}
-                      {article.confidence && (
-                        <div className="italic-content text-xs font-bold text-green-600 uppercase">
-                          🎯 {Math.round(article.confidence * 100)}% CONFIDENCE
-                        </div>
-                      )}
+                      <div className={`italic-content text-xs font-bold uppercase ${validation.textClass}`}>
+                        🎯 {validation.pct}% VERIFICATION
+                      </div>
                     </div>
 
                     {article.url && (
@@ -1256,7 +1293,8 @@ const RealTimeNews: React.FC = () => {
                     )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

@@ -164,7 +164,7 @@
 
 .mini-category-tag {
   color: #fefdfb;
-  background: #000 !important;
+  background: #000;
   padding: 2px 6px;
   font-size: 0.65em;
   font-weight: 700;
@@ -175,6 +175,61 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+.widget-category-crime { background: #ef4444; }
+.widget-category-accident { background: #f97316; }
+.widget-category-event { background: #10b981; }
+.widget-category-weather { background: #06b6d4; }
+.widget-category-politics { background: #8b5cf6; }
+.widget-category-business { background: #f59e0b; }
+.widget-category-sports { background: #84cc16; }
+.widget-category-technology { background: #6366f1; }
+.widget-category-default { background: #6b7280; }
+
+.verification-meter {
+  margin: 8px 0 10px 0;
+}
+
+.verification-meter-label {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 0.72em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.verification-meter-track {
+  width: 100%;
+  height: 8px;
+  border: 1px solid #000;
+  background: #ece7dc;
+}
+
+.verification-meter-fill {
+  height: 100%;
+  transition: width 0.35s ease;
+}
+
+.widget-score-text-green { color: #16a34a; }
+.widget-score-text-orange { color: #f97316; }
+.widget-score-text-yellow { color: #ca8a04; }
+.widget-score-text-red { color: #dc2626; }
+
+.widget-score-fill-green { background: #16a34a; }
+.widget-score-fill-orange { background: #f97316; }
+.widget-score-fill-yellow { background: #eab308; }
+.widget-score-fill-red { background: #dc2626; }
+
+.widget-score-width-87 { width: 87%; }
+.widget-score-width-88 { width: 88%; }
+.widget-score-width-89 { width: 89%; }
+.widget-score-width-90 { width: 90%; }
+.widget-score-width-91 { width: 91%; }
+.widget-score-width-92 { width: 92%; }
+.widget-score-width-93 { width: 93%; }
+.widget-score-width-94 { width: 94%; }
+.widget-score-width-95 { width: 95%; }
 
 .news-item-content {
   margin: 8px 0 10px 0;
