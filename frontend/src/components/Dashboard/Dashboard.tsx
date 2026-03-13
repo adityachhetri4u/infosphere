@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchNewsStats = async () => {
       try {
-        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
         const response = await fetch(`${API_BASE_URL}/api/v1/news/stats`);
         if (response.ok) {
           const data = await response.json();
@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
       // Try to fetch from backend with enhanced error handling
       let data;
       try {
-        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
         const response = await fetch(`${API_BASE_URL}/api/v1/news/fetch`, {
           method: 'POST',
           headers: {
@@ -121,7 +121,7 @@ Sources: ${sources.slice(0, 3).join(', ')}${sources.length > 3 ? '...' : ''}`);
       
       // Try to refresh news stats after fetch
       try {
-        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
         const statsResponse = await fetch(`${API_BASE_URL}/api/v1/news/stats`);
         if (statsResponse.ok) {
           const statsData = await statsResponse.json();
@@ -154,7 +154,7 @@ Sources: Times of India RSS, NDTV Live Feed, Indian Express API...`);
     
     setLoading(true);
     try {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
       const response = await fetch(`${API_BASE_URL}/api/v1/news/clear`, {
         method: 'DELETE'
       });
@@ -183,7 +183,7 @@ Sources: Times of India RSS, NDTV Live Feed, Indian Express API...`);
   useEffect(() => {
     const fetchBreakingNews = async () => {
       try {
-        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
         const response = await fetch(`${API_BASE_URL}/api/v1/news/breaking-news?limit=3`);
         if (response.ok) {
           const data = await response.json();
@@ -290,7 +290,7 @@ Sources: Times of India RSS, NDTV Live Feed, Indian Express API...`);
             THE INFOSPHERE HERALD
           </h1>
           <div className="flex justify-center items-center space-x-8 text-sm font-semibold text-black">
-            <span>ESTABLISHED 2025</span>
+
             <span className="border-l border-r border-black px-4">CIVIC INTELLIGENCE DAILY</span>
             <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>

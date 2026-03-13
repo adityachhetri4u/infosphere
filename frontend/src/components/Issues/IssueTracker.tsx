@@ -161,7 +161,7 @@ const IssueTracker: React.FC = () => {
             <div className="flex justify-center items-center space-x-8 text-sm font-semibold text-black">
               <span>ISSUE MONITORING DESK</span>
               <span className="border-l border-r border-black px-4">REAL-TIME STATUS</span>
-              <span>EST. 2025</span>
+              
             </div>
           </div>
           <div className="mt-4">

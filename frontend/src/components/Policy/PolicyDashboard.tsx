@@ -106,9 +106,9 @@ const PolicyDashboard: React.FC = () => {
   };
 
   const getSentimentChartData = (sentiment: SentimentData) => [
-    { name: 'Positive', value: Math.round(sentiment.positive_score * 100), color: '#10b981' },
-    { name: 'Negative', value: Math.round(sentiment.negative_score * 100), color: '#ef4444' },
-    { name: 'Neutral', value: Math.round(sentiment.neutral_score * 100), color: '#6b7280' }
+    { name: 'Positive', value: Math.round(sentiment.positive_score * 100), color: '#6f9f88' },
+    { name: 'Negative', value: Math.round(sentiment.negative_score * 100), color: '#b78383' },
+    { name: 'Neutral', value: Math.round(sentiment.neutral_score * 100), color: '#8a8f9f' }
   ];
 
   const getOverallSentimentData = () => {
@@ -133,9 +133,9 @@ const PolicyDashboard: React.FC = () => {
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-green-600 bg-green-100';
-      case 'negative': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'positive': return 'text-green-800 bg-green-100 border border-green-300';
+      case 'negative': return 'text-red-800 bg-red-100 border border-red-300';
+      default: return 'text-slate-700 bg-slate-100 border border-slate-300';
     }
   };
 
@@ -155,7 +155,7 @@ const PolicyDashboard: React.FC = () => {
     setIsAnalyzing(true);
     setPolicyAnalysis(null);
     
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
     try {
       const formData = new FormData();
@@ -215,7 +215,7 @@ const PolicyDashboard: React.FC = () => {
   return (
     <>
       {ENABLE_NEWSPAPER_BORDERS && <NewspaperBorders />}
-      <div className={`enhanced-typography policy-container ${ENABLE_NEWSPAPER_BORDERS ? 'pt-10 pb-10 pl-8 pr-8' : ''}`}>
+      <div className={`newspaper-bg enhanced-typography policy-container ${ENABLE_NEWSPAPER_BORDERS ? 'pt-10 pb-10 pl-8 pr-8' : ''}`}>
         <div className="max-w-[1400px] mx-auto px-6">
         <div className="policy-header">
           <div className="border-t-4 border-b-4 border-black py-4 mx-4">
@@ -225,7 +225,6 @@ const PolicyDashboard: React.FC = () => {
             <div className="italic-content flex justify-center items-center space-x-8 text-sm font-semibold text-black">
               <span>POLICY ANALYSIS BUREAU</span>
               <span className="border-l border-r border-black px-4">AI-POWERED INSIGHTS</span>
-              <span>EST. 2025</span>
             </div>
           </div>
           <div className="mt-4">
@@ -237,23 +236,23 @@ const PolicyDashboard: React.FC = () => {
         
         {/* Tab Navigation */}
         <div className="flex justify-center mt-6">
-          <div className="flex bg-secondary-100 rounded-lg p-1">
+          <div className="flex border-2 border-black p-1 bg-white">
             <button
               onClick={() => setActiveTab('policies')}
-              className={`px-6 py-2 rounded-md font-medium transition-all ${
+              className={`px-6 py-2 font-black uppercase tracking-wide text-sm transition-colors ${
                 activeTab === 'policies'
-                  ? 'bg-white text-primary-600 shadow-sm'
-                  : 'text-secondary-600 hover:text-secondary-900'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
               📋 Active Policies
             </button>
             <button
               onClick={() => setActiveTab('upload')}
-              className={`px-6 py-2 rounded-md font-medium transition-all ${
+              className={`px-6 py-2 font-black uppercase tracking-wide text-sm transition-colors ${
                 activeTab === 'upload'
-                  ? 'bg-white text-primary-600 shadow-sm'
-                  : 'text-secondary-600 hover:text-secondary-900'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
               📄 Upload PDF Policy
@@ -266,9 +265,11 @@ const PolicyDashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Policy List */}
           <div className="lg:col-span-1">
-            <div className="card">
-              <h2 className="bold-title text-xl font-semibold text-secondary-900 mb-4">Active Policies</h2>
-            <div className="space-y-3">
+            <div className="newspaper-section">
+              <div className="bg-black text-white px-4 py-2">
+                <h2 className="bold-title text-sm font-black uppercase tracking-widest">Active Policies</h2>
+              </div>
+              <div className="space-y-0 divide-y divide-gray-300">
               {mockPolicies.map((policy) => {
                 const sentiment = mockSentimentData[policy.id];
                 const dominantSentiment = getDominantSentiment(sentiment);
@@ -277,46 +278,52 @@ const PolicyDashboard: React.FC = () => {
                   <div
                     key={policy.id}
                     onClick={() => handlePolicyClick(policy)}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                    className={`p-4 cursor-pointer transition-all ${
                       selectedPolicy?.id === policy.id
-                        ? 'border-primary-300 bg-primary-50'
-                        : 'border-secondary-200 hover:border-primary-200 hover:bg-primary-25'
+                        ? 'bg-black text-white'
+                        : 'hover:bg-gray-50'
                     }`}
                   >
-                    <h3 className="bold-title font-medium text-secondary-900 mb-2 line-clamp-2">
+                    <h3 className={`bold-title font-black mb-2 line-clamp-2 text-sm ${selectedPolicy?.id === policy.id ? 'text-white' : 'text-black'}`} style={{fontFamily:'"Playfair Display",Georgia,serif'}}>
                       {policy.title}
                     </h3>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="italic-content px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={`bold-title px-2 py-0.5 uppercase tracking-wide text-xs border ${
+                        selectedPolicy?.id === policy.id ? 'border-white text-white' : 'border-black text-black'
+                      }`}>
                         {policy.category}
                       </span>
-                      <span className={`italic-content px-2 py-1 rounded text-xs font-medium ${getSentimentColor(dominantSentiment)}`}>
+                      <span className={`italic-content text-xs font-medium ${getSentimentColor(dominantSentiment)}`}>
                         {dominantSentiment.charAt(0).toUpperCase() + dominantSentiment.slice(1)}
                       </span>
                     </div>
-                    <div className="italic-content mt-2 text-xs text-secondary-500">
+                    <div className={`italic-content mt-2 text-xs ${selectedPolicy?.id === policy.id ? 'text-gray-300' : 'text-gray-500'}`}>
                       {sentiment.total_comments} public comments
                     </div>
                   </div>
                 );
               })}
+              </div>
             </div>
-          </div>
 
           {/* Overall Sentiment Chart */}
-          <div className="card mt-6">
-            <h3 className="bold-title text-lg font-semibold text-secondary-900 mb-4">Policy Sentiment Overview</h3>
+          <div className="newspaper-section mt-6">
+            <div className="bg-black text-white px-4 py-2 mb-4">
+              <h3 className="bold-title text-sm font-black uppercase tracking-widest">Policy Sentiment Overview</h3>
+            </div>
+            <div className="px-4 pb-4">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={getOverallSentimentData()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" fontSize={12} />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#d4c1a0" />
+                <XAxis dataKey="name" fontSize={12} stroke="#5c4234" />
+                <YAxis stroke="#5c4234" />
                 <Tooltip />
-                <Bar dataKey="positive" fill="#10b981" name="Positive %" />
-                <Bar dataKey="negative" fill="#ef4444" name="Negative %" />
-                <Bar dataKey="neutral" fill="#6b7280" name="Neutral %" />
+                <Bar dataKey="positive" fill="#6f9f88" name="Positive %" />
+                <Bar dataKey="negative" fill="#b78383" name="Negative %" />
+                <Bar dataKey="neutral" fill="#8a8f9f" name="Neutral %" />
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
@@ -325,34 +332,32 @@ const PolicyDashboard: React.FC = () => {
           {selectedPolicy ? (
             <div className="space-y-6">
               {/* Policy Header */}
-              <div className="card">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h2 className="bold-title text-2xl font-bold text-secondary-900 mb-2">
-                      {selectedPolicy.title}
-                    </h2>
-                    <div className="flex items-center gap-3">
-                      <span className="italic-content px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                        {selectedPolicy.category}
-                      </span>
-                      <span className="italic-content px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                        {selectedPolicy.status.charAt(0).toUpperCase() + selectedPolicy.status.slice(1)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="italic-content text-sm text-secondary-500 ml-4">
-                    Published {new Date(selectedPolicy.created_at).toLocaleDateString()}
+              <div className="newspaper-section">
+                <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
+                  <h2 className="bold-title font-black uppercase tracking-wide text-base" style={{fontFamily:'"Playfair Display",Georgia,serif'}}>{selectedPolicy.title}</h2>
+                  <div className="italic-content text-xs text-gray-300 ml-4 shrink-0">
+                    {new Date(selectedPolicy.created_at).toLocaleDateString()}
                   </div>
                 </div>
-
-                {/* AI Summary */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <div className="flex items-center mb-3">
-                    <div className="text-2xl mr-3">🤖</div>
-                    <h3 className="bold-title font-semibold text-blue-900">AI-Generated Summary</h3>
+                <div className="p-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="bold-title px-2 py-0.5 bg-black text-white text-xs uppercase tracking-wide">
+                      {selectedPolicy.category}
+                    </span>
+                    <span className="italic-content text-xs border border-green-700 text-green-800 px-2 py-0.5">
+                      {selectedPolicy.status.charAt(0).toUpperCase() + selectedPolicy.status.slice(1)}
+                    </span>
                   </div>
-                  <div className="italic-content text-blue-800 whitespace-pre-line">
-                    {selectedPolicy.ai_summary}
+
+                  {/* AI Summary */}
+                  <div className="border-l-4 border-black pl-4 py-2">
+                    <div className="flex items-center mb-2">
+                      <span className="text-xl mr-2">🤖</span>
+                      <h3 className="bold-title font-black text-black uppercase text-xs tracking-widest">AI-Generated Summary</h3>
+                    </div>
+                    <div className="italic-content text-gray-800 whitespace-pre-line leading-relaxed" style={{fontFamily:'Georgia,serif'}}>
+                      {selectedPolicy.ai_summary}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -360,8 +365,11 @@ const PolicyDashboard: React.FC = () => {
               {/* Sentiment Analysis */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Sentiment Chart */}
-                <div className="card">
-                  <h3 className="bold-title text-lg font-semibold text-secondary-900 mb-4">Public Sentiment</h3>
+                <div className="newspaper-section">
+                  <div className="bg-black text-white px-4 py-2 mb-0">
+                    <h3 className="bold-title text-xs font-black uppercase tracking-widest">Public Sentiment</h3>
+                  </div>
+                  <div className="p-4">
                   <div className="h-64 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -381,11 +389,15 @@ const PolicyDashboard: React.FC = () => {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
+                  </div>
                 </div>
 
                 {/* Sentiment Stats */}
-                <div className="card">
-                  <h3 className="bold-title text-lg font-semibold text-secondary-900 mb-4">Sentiment Statistics</h3>
+                <div className="newspaper-section">
+                  <div className="bg-black text-white px-4 py-2 mb-0">
+                    <h3 className="bold-title text-xs font-black uppercase tracking-widest">Sentiment Statistics</h3>
+                  </div>
+                  <div className="p-4">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="italic-content text-secondary-700">Total Comments</span>
@@ -403,8 +415,8 @@ const PolicyDashboard: React.FC = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-green-500 h-2 rounded-full"
-                          style={{ width: `${mockSentimentData[selectedPolicy.id].positive_score * 100}%` }}
+                          className="h-2 rounded-full"
+                          style={{ backgroundColor: '#6f9f88', width: `${mockSentimentData[selectedPolicy.id].positive_score * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -418,8 +430,8 @@ const PolicyDashboard: React.FC = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-red-500 h-2 rounded-full"
-                          style={{ width: `${mockSentimentData[selectedPolicy.id].negative_score * 100}%` }}
+                          className="h-2 rounded-full"
+                          style={{ backgroundColor: '#b78383', width: `${mockSentimentData[selectedPolicy.id].negative_score * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -433,19 +445,22 @@ const PolicyDashboard: React.FC = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-gray-500 h-2 rounded-full"
-                          style={{ width: `${mockSentimentData[selectedPolicy.id].neutral_score * 100}%` }}
+                          className="h-2 rounded-full"
+                          style={{ backgroundColor: '#8a8f9f', width: `${mockSentimentData[selectedPolicy.id].neutral_score * 100}%` }}
                         ></div>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>
 
               {/* Add Comment */}
-              <div className="card">
-                <h3 className="bold-title text-lg font-semibold text-secondary-900 mb-4">Add Your Comment</h3>
-                <div className="space-y-4">
+              <div className="newspaper-section">
+                <div className="bg-black text-white px-4 py-2">
+                  <h3 className="bold-title text-xs font-black uppercase tracking-widest">Add Your Comment</h3>
+                </div>
+                <div className="p-4 space-y-4">
                   <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
@@ -479,16 +494,16 @@ const PolicyDashboard: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="card text-center py-12">
+            <div className="newspaper-section text-center py-12">
               <div className="text-6xl mb-4">📋</div>
-              <h3 className="bold-title text-xl font-semibold text-secondary-900 mb-2">Select a Policy</h3>
-              <p className="italic-content text-secondary-600 mb-6">
+              <h3 className="bold-title text-xl font-black text-black mb-2" style={{fontFamily:'"Playfair Display",Georgia,serif'}}>Select a Policy</h3>
+              <p className="italic-content text-gray-600 mb-6">
                 Choose a policy from the left panel to view AI summaries and sentiment analysis
               </p>
               
-              <div className="bg-secondary-50 rounded-lg p-6 max-w-md mx-auto">
-                <h4 className="bold-title font-medium text-secondary-900 mb-3">AI Features Available</h4>
-                <ul className="italic-content text-sm text-secondary-600 space-y-2 text-left">
+              <div className="border-2 border-black p-6 max-w-md mx-auto">
+                <h4 className="bold-title font-black text-black mb-3 uppercase text-sm tracking-wide">AI Features Available</h4>
+                <ul className="italic-content text-sm text-gray-700 space-y-2 text-left" style={{fontFamily:'Georgia,serif'}}>
                   <li>• Automated policy summarization using BART</li>
                   <li>• Multilingual sentiment analysis with XLM-R</li>
                   <li>• Real-time public opinion monitoring</li>
@@ -503,14 +518,17 @@ const PolicyDashboard: React.FC = () => {
       ) : (
         /* PDF Upload Section */
         <div className="max-w-4xl mx-auto">
-          <div className="card mb-8">
-            <h2 className="bold-title text-2xl font-bold text-secondary-900 mb-6 text-center">📄 PDF Policy Analysis</h2>
+          <div className="newspaper-section mb-8">
+            <div className="bg-black text-white px-4 py-2 text-center">
+              <h2 className="bold-title text-sm font-black uppercase tracking-widest">📄 PDF Policy Analysis</h2>
+            </div>
+            <div className="p-6">
             
             {!selectedFile ? (
-              <div className="text-center py-12 border-2 border-dashed border-secondary-300 rounded-lg">
+              <div className="text-center py-12 border-2 border-dashed border-black">
                 <div className="text-6xl mb-4">📁</div>
-                <h3 className="bold-title text-xl font-semibold text-secondary-900 mb-4">Upload Policy PDF</h3>
-                <p className="italic-content text-secondary-600 mb-6 max-w-md mx-auto">
+                <h3 className="bold-title text-xl font-black text-black mb-4" style={{fontFamily:'"Playfair Display",Georgia,serif'}}>Upload Policy PDF</h3>
+                <p className="italic-content text-gray-600 mb-6 max-w-md mx-auto" style={{fontFamily:'Georgia,serif'}}>
                   Upload a PDF policy document to get AI-powered analysis including summaries, 
                   key points extraction, and sentiment evaluation.
                 </p>
@@ -530,7 +548,7 @@ const PolicyDashboard: React.FC = () => {
                     📤 Select PDF File
                   </label>
                   
-                  <div className="text-sm text-secondary-500">
+                  <div className="italic-content text-sm text-gray-500">
                     Maximum file size: 10MB • Supported format: PDF
                   </div>
                 </div>
@@ -538,13 +556,13 @@ const PolicyDashboard: React.FC = () => {
             ) : (
               <div className="space-y-6">
                 {/* File Info */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="newspaper-card">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-2xl mr-3">📄</div>
                       <div>
-                        <div className="font-medium text-blue-900">{selectedFile.name}</div>
-                        <div className="text-sm text-blue-700">
+                        <div className="bold-title font-black text-black text-sm" style={{fontFamily:'Georgia,serif'}}>{selectedFile.name}</div>
+                        <div className="italic-content text-gray-600 text-xs">
                           {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                         </div>
                       </div>
@@ -569,7 +587,7 @@ const PolicyDashboard: React.FC = () => {
                       </button>
                       <button
                         onClick={clearUpload}
-                        className="px-4 py-2 text-secondary-600 hover:text-secondary-800 border border-secondary-300 rounded-md hover:bg-secondary-50"
+                        className="px-4 py-2 text-black border-2 border-black font-black uppercase text-xs tracking-wide hover:bg-black hover:text-white transition-colors"
                       >
                         Clear
                       </button>
@@ -581,53 +599,53 @@ const PolicyDashboard: React.FC = () => {
                 {policyAnalysis && (
                   <div className="space-y-6">
                     {/* Title and Summary */}
-                    <div className="card">
-                      <h3 className="text-xl font-bold text-secondary-900 mb-4">
-                        {policyAnalysis.title || 'Policy Document Analysis'}
-                      </h3>
-                      
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-6">
+                    <div className="newspaper-section">
+                      <div className="bg-black text-white px-4 py-2">
+                        <h3 className="bold-title font-black uppercase tracking-widest text-sm" style={{fontFamily:'"Playfair Display",Georgia,serif'}}>{policyAnalysis.title || 'Policy Document Analysis'}</h3>
+                      </div>
+                      <div className="p-4 mb-2">
+                      <div className="border-l-4 border-black pl-4 py-2 mb-6">
                         <div className="flex items-start">
-                          <div className="text-2xl mr-3">🤖</div>
+                          <span className="text-2xl mr-3">🤖</span>
                           <div>
-                            <h4 className="font-semibold text-blue-900 mb-3">AI-Generated Summary</h4>
-                            <p className="text-blue-800 leading-relaxed">{policyAnalysis.summary}</p>
+                            <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-2">AI-Generated Summary</h4>
+                            <p className="italic-content text-gray-800 leading-relaxed" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.summary}</p>
                           </div>
                         </div>
                       </div>
 
                       {/* Sentiment Analysis */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div className="bg-secondary-50 rounded-lg p-4">
-                          <h4 className="font-semibold text-secondary-900 mb-3">📊 Sentiment Analysis</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="border-2 border-black p-4">
+                          <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-3">📊 Sentiment Analysis</h4>
                           <div className="flex items-center justify-between">
                             <span className="text-secondary-700">Overall Sentiment:</span>
                             <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                               policyAnalysis.sentiment.label.toLowerCase() === 'positive' 
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-green-100 text-green-800 border border-green-300'
                                 : policyAnalysis.sentiment.label.toLowerCase() === 'negative'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-gray-100 text-gray-800'
+                                ? 'bg-red-100 text-red-800 border border-red-300'
+                                : 'bg-slate-100 text-slate-700 border border-slate-300'
                             }`}>
                               {policyAnalysis.sentiment.label} ({(policyAnalysis.sentiment.score * 100).toFixed(1)}%)
                             </span>
                           </div>
                         </div>
 
-                        <div className="bg-secondary-50 rounded-lg p-4">
-                          <h4 className="font-semibold text-secondary-900 mb-3">📋 Document Structure</h4>
-                          <p className="text-secondary-700 text-sm">{policyAnalysis.structure}</p>
+                        <div className="border-2 border-black p-4">
+                          <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-3">📋 Document Structure</h4>
+                          <p className="italic-content text-gray-800 text-sm" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.structure}</p>
                         </div>
                       </div>
 
                       {/* Key Points */}
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                        <h4 className="font-semibold text-green-900 mb-4">🎯 Key Points Extracted ({policyAnalysis.key_points.length})</h4>
+                      <div className="border-l-4 border-black pl-4 py-2 mt-2">
+                        <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-3">🎯 Key Points Extracted ({policyAnalysis.key_points.length})</h4>
                         <ul className="space-y-2">
                           {policyAnalysis.key_points.map((point, index) => (
                             <li key={index} className="flex items-start">
-                              <span className="text-green-600 mr-2 mt-1 font-bold">{index + 1}.</span>
-                              <span className="text-green-800">{point}</span>
+                              <span className="bold-title text-black mr-2 font-black text-sm">{index + 1}.</span>
+                              <span className="italic-content text-gray-800 text-sm" style={{fontFamily:'Georgia,serif'}}>{point}</span>
                             </li>
                           ))}
                         </ul>
@@ -635,13 +653,13 @@ const PolicyDashboard: React.FC = () => {
 
                       {/* Executive Highlights */}
                       {policyAnalysis.executive_highlights && policyAnalysis.executive_highlights.length > 0 && (
-                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
-                          <h4 className="font-semibold text-amber-900 mb-4">⚡ Executive Highlights</h4>
+                        <div className="border-l-4 border-gray-500 pl-4 py-2 mt-2">
+                          <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-3">⚡ Executive Highlights</h4>
                           <ul className="space-y-2">
                             {policyAnalysis.executive_highlights.map((highlight, index) => (
                               <li key={index} className="flex items-start">
-                                <span className="text-amber-600 mr-2 mt-1">▸</span>
-                                <span className="text-amber-800">{highlight}</span>
+                                <span className="bold-title text-black mr-2">▸</span>
+                                <span className="italic-content text-gray-800 text-sm" style={{fontFamily:'Georgia,serif'}}>{highlight}</span>
                               </li>
                             ))}
                           </ul>
@@ -650,13 +668,13 @@ const PolicyDashboard: React.FC = () => {
 
                       {/* Section Summaries */}
                       {policyAnalysis.section_summaries && policyAnalysis.section_summaries.length > 0 && (
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-                          <h4 className="font-semibold text-purple-900 mb-4">📖 Section-by-Section Analysis</h4>
-                          <div className="space-y-4">
+                        <div className="border-2 border-black p-4 mt-2">
+                          <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-4">📖 Section-by-Section Analysis</h4>
+                          <div className="space-y-3 divide-y divide-gray-300">
                             {policyAnalysis.section_summaries.map((section, index) => (
-                              <div key={index} className="border-l-4 border-purple-400 pl-4">
-                                <h5 className="font-medium text-purple-900 mb-1">{section.title}</h5>
-                                <p className="text-purple-700 text-sm">{section.summary}</p>
+                              <div key={index} className="border-l-4 border-black pl-3 pt-2">
+                                <h5 className="bold-title font-black text-black text-sm mb-1" style={{fontFamily:'"Playfair Display",Georgia,serif'}}>{section.title}</h5>
+                                <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>{section.summary}</p>
                               </div>
                             ))}
                           </div>
@@ -665,37 +683,37 @@ const PolicyDashboard: React.FC = () => {
 
                       {/* Policy Implications */}
                       {policyAnalysis.policy_implications && (
-                        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-                          <h4 className="font-semibold text-indigo-900 mb-4">📊 Policy Impact Analysis</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                            <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                              <div className="text-xs text-indigo-600 uppercase font-medium">Complexity</div>
-                              <div className="text-lg font-bold text-indigo-900">{policyAnalysis.policy_implications.complexity_level || 'N/A'}</div>
+                        <div className="border-2 border-black p-4 mt-2">
+                          <h4 className="bold-title font-black text-black uppercase text-xs tracking-widest mb-4">📊 Policy Impact Analysis</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 mb-4 border-2 border-black">
+                            <div className="p-3 text-center border-r border-b border-black">
+                              <div className="bold-title text-xs text-black uppercase font-black">Complexity</div>
+                              <div className="italic-content text-base font-black text-black" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.policy_implications.complexity_level || 'N/A'}</div>
                             </div>
-                            <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                              <div className="text-xs text-indigo-600 uppercase font-medium">Requirements</div>
-                              <div className="text-lg font-bold text-indigo-900">{policyAnalysis.policy_implications.requirement_count ?? 'N/A'}</div>
+                            <div className="p-3 text-center border-r border-b border-black">
+                              <div className="bold-title text-xs text-black uppercase font-black">Requirements</div>
+                              <div className="italic-content text-base font-black text-black" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.policy_implications.requirement_count ?? 'N/A'}</div>
                             </div>
-                            <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                              <div className="text-xs text-indigo-600 uppercase font-medium">Reading Time</div>
-                              <div className="text-lg font-bold text-indigo-900">{policyAnalysis.policy_implications.estimated_reading_time || 'N/A'}</div>
+                            <div className="p-3 text-center border-r border-b border-black">
+                              <div className="bold-title text-xs text-black uppercase font-black">Reading Time</div>
+                              <div className="italic-content text-base font-black text-black" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.policy_implications.estimated_reading_time || 'N/A'}</div>
                             </div>
-                            <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-                              <div className="text-xs text-indigo-600 uppercase font-medium">Impact Areas</div>
-                              <div className="text-lg font-bold text-indigo-900">{policyAnalysis.policy_implications.impact_areas?.length || 0}</div>
+                            <div className="p-3 text-center border-b border-black">
+                              <div className="bold-title text-xs text-black uppercase font-black">Impact Areas</div>
+                              <div className="italic-content text-base font-black text-black" style={{fontFamily:'Georgia,serif'}}>{policyAnalysis.policy_implications.impact_areas?.length || 0}</div>
                             </div>
                           </div>
                           {policyAnalysis.policy_implications.impact_areas && policyAnalysis.policy_implications.impact_areas.length > 0 && (
                             <div className="space-y-2">
-                              <h5 className="text-sm font-medium text-indigo-800">Impact Areas:</h5>
+                              <h5 className="text-sm font-medium text-secondary-800">Impact Areas:</h5>
                               {policyAnalysis.policy_implications.impact_areas.map((area, index) => (
                                 <div key={index} className="flex items-center justify-between">
-                                  <span className="text-indigo-700 text-sm">{area.area}</span>
+                                  <span className="text-secondary-700 text-sm">{area.area}</span>
                                   <div className="flex items-center gap-2">
-                                    <div className="w-32 bg-indigo-200 rounded-full h-2">
-                                      <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${area.relevance * 100}%` }}></div>
+                                    <div className="w-32 bg-gray-200 h-2">
+                                      <div className="bg-black h-2" style={{ width: `${area.relevance * 100}%` }}></div>
                                     </div>
-                                    <span className="text-xs text-indigo-600 w-10 text-right">{Math.round(area.relevance * 100)}%</span>
+                                    <span className="text-xs text-secondary-600 w-10 text-right">{Math.round(area.relevance * 100)}%</span>
                                   </div>
                                 </div>
                               ))}
@@ -703,39 +721,41 @@ const PolicyDashboard: React.FC = () => {
                           )}
                         </div>
                       )}
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
             )}
+            </div>
           </div>
 
           {/* PDF Analysis Features */}
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl text-white p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">🤖 AI-Powered PDF Analysis</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <div className="text-3xl mb-2">📄</div>
-                  <h3 className="font-semibold mb-2">Text Extraction</h3>
-                  <p className="text-sm opacity-90">
-                    Advanced PDF parsing with PyPDF2 and pdfplumber for comprehensive text extraction
-                  </p>
-                </div>
-                <div>
-                  <div className="text-3xl mb-2">📝</div>
-                  <h3 className="font-semibold mb-2">BART Summarization</h3>
-                  <p className="text-sm opacity-90">
-                    Generates concise summaries and extracts key policy points automatically
-                  </p>
-                </div>
-                <div>
-                  <div className="text-3xl mb-2">😊</div>
-                  <h3 className="font-semibold mb-2">Sentiment Analysis</h3>
-                  <p className="text-sm opacity-90">
-                    RoBERTa-based sentiment evaluation to understand policy tone and implications
-                  </p>
-                </div>
+          <div className="newspaper-section mt-6">
+            <div className="bg-black text-white px-4 py-2 text-center">
+              <h2 className="bold-title font-black uppercase tracking-widest text-sm">🤖 AI-Powered PDF Analysis</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-black">
+              <div className="p-6 text-center">
+                <div className="text-3xl mb-2">📄</div>
+                <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">Text Extraction</h3>
+                <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+                  Advanced PDF parsing with PyPDF2 and pdfplumber for comprehensive text extraction
+                </p>
+              </div>
+              <div className="p-6 text-center">
+                <div className="text-3xl mb-2">📝</div>
+                <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">BART Summarization</h3>
+                <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+                  Generates concise summaries and extracts key policy points automatically
+                </p>
+              </div>
+              <div className="p-6 text-center">
+                <div className="text-3xl mb-2">😊</div>
+                <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">Sentiment Analysis</h3>
+                <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+                  RoBERTa-based sentiment evaluation to understand policy tone and implications
+                </p>
               </div>
             </div>
           </div>
@@ -743,31 +763,31 @@ const PolicyDashboard: React.FC = () => {
       )}
 
       {/* Technology Information */}
-      <div className="mt-8 bg-gradient-to-r from-primary-600 to-blue-600 rounded-xl text-white p-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Advanced NLP Technology</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <div className="text-3xl mb-2">📝</div>
-              <h3 className="font-semibold mb-2">BART Summarization</h3>
-              <p className="text-sm opacity-90">
-                Automatically generates concise 3-point summaries from complex policy documents
-              </p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">🌍</div>
-              <h3 className="font-semibold mb-2">Multilingual Sentiment</h3>
-              <p className="text-sm opacity-90">
-                XLM-RoBERTa model analyzes sentiment across multiple languages and dialects
-              </p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">📊</div>
-              <h3 className="font-semibold mb-2">Real-time Analysis</h3>
-              <p className="text-sm opacity-90">
-                Continuous monitoring and updating of public sentiment as new comments arrive
-              </p>
-            </div>
+      <div className="newspaper-section mt-8">
+        <div className="bg-black text-white px-4 py-2 text-center">
+          <h2 className="bold-title font-black uppercase tracking-widest text-sm">Advanced NLP Technology</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-black">
+          <div className="p-6 text-center">
+            <div className="text-3xl mb-2">📝</div>
+            <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">BART Summarization</h3>
+            <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+              Automatically generates concise 3-point summaries from complex policy documents
+            </p>
+          </div>
+          <div className="p-6 text-center">
+            <div className="text-3xl mb-2">🌍</div>
+            <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">Multilingual Sentiment</h3>
+            <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+              XLM-RoBERTa model analyzes sentiment across multiple languages and dialects
+            </p>
+          </div>
+          <div className="p-6 text-center">
+            <div className="text-3xl mb-2">📊</div>
+            <h3 className="bold-title font-black text-black uppercase text-xs tracking-wide mb-2">Real-time Analysis</h3>
+            <p className="italic-content text-gray-700 text-sm" style={{fontFamily:'Georgia,serif'}}>
+              Continuous monitoring and updating of public sentiment as new comments arrive
+            </p>
           </div>
         </div>
         </div>

@@ -435,7 +435,6 @@ const EnhancedMediaVerification: React.FC = () => {
             <div className="flex justify-center items-center space-x-8 text-sm font-semibold text-black">
               <span>TRUTH DETECTION BUREAU</span>
               <span className="border-l border-r border-black px-4">AI-POWERED INTEGRITY</span>
-              <span>EST. 2025</span>
             </div>
           </div>
           <div className="mt-4">
@@ -505,7 +504,7 @@ const EnhancedMediaVerification: React.FC = () => {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
                   Media Type
                 </label>
                 <div className="flex space-x-4">
@@ -533,7 +532,7 @@ const EnhancedMediaVerification: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
                   Choose File
                 </label>
                 <input
@@ -545,9 +544,9 @@ const EnhancedMediaVerification: React.FC = () => {
               </div>
 
               {selectedFile && (
-                <div className="bg-secondary-50 rounded-lg p-3">
-                  <p className="font-medium text-secondary-900">{selectedFile.name}</p>
-                  <p className="text-sm text-secondary-600">
+                <div className="bg-[#f5eed9] p-3 border-2 border-black">
+                  <p className="font-black text-black">{selectedFile.name}</p>
+                  <p className="text-sm text-black" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                     {(selectedFile.size / 1024 / 1024).toFixed(2)} MB • {selectedFile.type}
                   </p>
                 </div>
@@ -563,7 +562,7 @@ const EnhancedMediaVerification: React.FC = () => {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
                   Source URL (Optional)
                 </label>
                 <input
@@ -576,7 +575,7 @@ const EnhancedMediaVerification: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
                   Article Content *
                 </label>
                 <textarea
@@ -586,7 +585,7 @@ const EnhancedMediaVerification: React.FC = () => {
                   rows={8}
                   className="input-field"
                 />
-                <div className="text-sm text-secondary-500 mt-1">
+                <div className="text-sm text-black mt-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                   {textContent.length} characters
                 </div>
               </div>
@@ -600,10 +599,10 @@ const EnhancedMediaVerification: React.FC = () => {
         <h2 className="newspaper-section-title text-xl font-black text-black border-b-2 border-black pb-2 mb-4 uppercase tracking-wide">📄 Fact Check a Document</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-2">Upload PDF or TXT</label>
+            <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">Upload PDF or TXT</label>
             <input type="file" accept="application/pdf,text/plain,.txt" onChange={handleDocumentSelect} className="input-field" />
             {documentFile && (
-              <div className="text-xs text-secondary-600 mt-1">{documentFile.name}</div>
+              <div className="text-xs text-black font-bold mt-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>{documentFile.name}</div>
             )}
           </div>
           <button

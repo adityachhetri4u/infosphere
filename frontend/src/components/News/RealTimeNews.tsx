@@ -143,7 +143,7 @@ const RealTimeNews: React.FC = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [showAnalytics, setShowAnalytics] = useState(false);
 
-  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8001') + '/api/v1/news';
+  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000') + '/api/v1/news';
 
   // Mock data for when backend is not available
   const getMockData = () => {
@@ -789,18 +789,18 @@ const RealTimeNews: React.FC = () => {
 
         {/* Live Connection Status Banner */}
         <div className="newspaper-section mb-8">
-          <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-4 border-4 border-black shadow-lg">
+          <div className="bg-black text-white p-4 border-4 border-black shadow-lg">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3">
                 <div className="live-dot"></div>
                 <div>
                   <div className="text-xl font-black uppercase tracking-wide">📡 LIVE RSS FEED CONNECTION</div>
-                  <div className="text-sm opacity-90">Real-time news aggregation active</div>
+                  <div className="text-sm opacity-90" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>Real-time news aggregation active</div>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-black">{serviceStatus}</div>
-                <div className="text-sm opacity-90">Connected to 5 news sources</div>
+                <div className="text-sm opacity-90" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>Connected to 5 news sources</div>
               </div>
             </div>
           </div>
@@ -1194,7 +1194,7 @@ const RealTimeNews: React.FC = () => {
                                 
                                 // Scrape full article content
                                 const response = await fetch(
-                                  `${process.env.REACT_APP_API_URL || 'http://localhost:8001'}/api/v1/news/scrape-article?url=${encodeURIComponent(article.url)}`
+                                  `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/news/scrape-article?url=${encodeURIComponent(article.url)}`
                                 );
                                 
                                 if (response.ok) {
