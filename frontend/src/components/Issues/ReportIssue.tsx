@@ -212,7 +212,6 @@ const ReportIssue: React.FC = () => {
             <div className="flex justify-center items-center space-x-6 text-sm font-semibold text-black">
               <span>CITIZEN JOURNALISM DESK</span>
               <span className="border-l border-r border-black px-4">AI-POWERED ROUTING</span>
-              <span>EST. 2025</span>
             </div>
           </div>
           <div className="mt-2">
@@ -240,7 +239,7 @@ const ReportIssue: React.FC = () => {
 
   <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-secondary-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
               Issue Title *
             </label>
             <input
@@ -256,7 +255,7 @@ const ReportIssue: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-secondary-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
               Detailed Description *
             </label>
             <textarea
@@ -269,13 +268,13 @@ const ReportIssue: React.FC = () => {
               placeholder="Provide detailed information about the issue, including when it occurred and any relevant circumstances"
               className="input-field resize-none"
             />
-            <div className="text-xs text-secondary-500 mt-1">
+            <div className="text-xs text-gray-600 mt-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
               AI will analyze this text to determine category and urgency
             </div>
           </div>
 
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-secondary-700 mb-2">
+            <label htmlFor="location" className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
               Location
             </label>
             <input
@@ -290,7 +289,7 @@ const ReportIssue: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="contact_info" className="block text-sm font-medium text-secondary-700 mb-2">
+            <label htmlFor="contact_info" className="block text-sm font-black text-black mb-2 uppercase tracking-wide">
               Contact Information (Optional)
             </label>
             <input

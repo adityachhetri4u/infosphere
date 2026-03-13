@@ -40,7 +40,7 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
     setError(null);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8001'}/api/v1/enhanced-verification/enhanced-verify`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/enhanced-verification/enhanced-verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,34 +73,35 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
   const getVerdictColor = (verdict: string) => {
     switch (verdict) {
       case 'VERIFIED':
-        return 'text-green-600 bg-green-50 border-green-200';
+        return 'text-green-700 bg-green-50 border-green-300';
       case 'NEEDS_REVIEW':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+        return 'text-amber-700 bg-amber-50 border-amber-300';
       case 'QUESTIONABLE':
-        return 'text-red-600 bg-red-50 border-red-200';
+        return 'text-red-700 bg-red-100 border-red-300';
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'text-slate-700 bg-slate-50 border-slate-300';
     }
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.8) return 'text-green-700';
+    if (score >= 0.6) return 'text-amber-700';
+    return 'text-red-700';
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+    <div className="rounded-lg shadow-lg p-6 space-y-6" style={{ backgroundColor: '#e8dcc6', borderColor: '#a69570', border: '2px solid #a69570' }}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Shield className="w-8 h-8 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Enhanced Verification</h2>
+          <Shield className="w-8 h-8" style={{ color: '#5c4234' }} />
+          <h2 className="text-2xl font-bold" style={{ color: '#4a3728', fontFamily: 'Playfair Display, Georgia, serif' }}>Enhanced Verification</h2>
         </div>
         <button
           onClick={runVerification}
           disabled={loading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+          className="px-6 py-2 text-white rounded-lg disabled:cursor-not-allowed transition-colors flex items-center space-x-2 font-bold"
+          style={{ backgroundColor: '#5c4234' }}
         >
           {loading ? (
             <>
@@ -117,21 +118,21 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
       </div>
 
       {/* Article Info */}
-      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-        <h3 className="font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-600">Source: {source}</p>
-        <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+      <div className="rounded-lg p-4 space-y-2" style={{ backgroundColor: '#f5f1e8' }}>
+        <h3 className="font-semibold" style={{ color: '#4a3728' }}>{title}</h3>
+        <p className="text-sm" style={{ color: '#5c4234' }}>Source: {source}</p>
+        <a href={articleUrl} target="_blank" rel="noopener noreferrer" className="text-xs hover:underline" style={{ color: '#5c4234' }}>
           {articleUrl}
         </a>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-          <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+        <div className="border rounded-lg p-4 flex items-start space-x-3" style={{ backgroundColor: '#f5e8e8', borderColor: '#b78383' }}>
+          <XCircle className="w-5 h-5 mt-0.5" style={{ color: '#b78383' }} />
           <div>
-            <h4 className="font-semibold text-red-900">Error</h4>
-            <p className="text-sm text-red-700">{error}</p>
+            <h4 className="font-semibold" style={{ color: '#8a3a3a' }}>Error</h4>
+            <p className="text-sm" style={{ color: '#8a3a3a' }}>{error}</p>
           </div>
         </div>
       )}
@@ -159,14 +160,14 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
 
           {/* Warnings & Flags */}
           {result.warnings.length > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="border rounded-lg p-4" style={{ backgroundColor: '#f0ede6', borderColor: '#d4c1a0' }}>
               <div className="flex items-start space-x-3">
-                <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 mt-0.5" style={{ color: '#8a7f6f' }} />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-yellow-900 mb-2">Warnings</h4>
+                  <h4 className="font-semibold mb-2" style={{ color: '#5c4234' }}>Warnings</h4>
                   <ul className="space-y-1">
                     {result.warnings.map((warning, idx) => (
-                      <li key={idx} className="text-sm text-yellow-700">• {warning}</li>
+                      <li key={idx} className="text-sm" style={{ color: '#5c4234' }}>• {warning}</li>
                     ))}
                   </ul>
                 </div>
@@ -176,12 +177,12 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
 
           {/* Temporal Verification */}
           {result.verifications.temporal && (
-            <div className="border border-gray-200 rounded-lg p-4">
+            <div className="border rounded-lg p-4" style={{ backgroundColor: '#f5f1e8', borderColor: '#a69570' }}>
               <div className="flex items-center space-x-2 mb-3">
-                <Clock className="w-5 h-5 text-purple-600" />
-                <h4 className="font-semibold text-gray-900">Temporal Analysis</h4>
+                <Clock className="w-5 h-5" style={{ color: '#5c4234' }} />
+                <h4 className="font-semibold" style={{ color: '#4a3728' }}>Temporal Analysis</h4>
               </div>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm" style={{ color: '#5c4234' }}>
                 <p>
                   <span className="font-medium">Claims Tracked:</span>{' '}
                   {result.verifications.temporal.total_claims || 0}
@@ -191,8 +192,8 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
                   {result.verifications.temporal.contradictory_claims || 0}
                 </p>
                 {result.verifications.temporal.shift_detected && (
-                  <div className="bg-red-50 border border-red-200 rounded p-2 mt-2">
-                    <p className="text-red-700 font-medium">⚠️ Narrative shift detected in recent articles</p>
+                  <div className="border rounded p-2 mt-2" style={{ backgroundColor: '#f5e8e8', borderColor: '#b78383' }}>
+                    <p className="font-medium" style={{ color: '#8a3a3a' }}>⚠️ Narrative shift detected in recent articles</p>
                   </div>
                 )}
               </div>
@@ -201,12 +202,12 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
 
           {/* Network Analysis */}
           {result.verifications.network && (
-            <div className="border border-gray-200 rounded-lg p-4">
+            <div className="border rounded-lg p-4" style={{ backgroundColor: '#f5f1e8', borderColor: '#a69570' }}>
               <div className="flex items-center space-x-2 mb-3">
-                <Network className="w-5 h-5 text-blue-600" />
-                <h4 className="font-semibold text-gray-900">Network Analysis</h4>
+                <Network className="w-5 h-5" style={{ color: '#5c4234' }} />
+                <h4 className="font-semibold" style={{ color: '#4a3728' }}>Network Analysis</h4>
               </div>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm" style={{ color: '#5c4234' }}>
                 <p>
                   <span className="font-medium">Trust Score:</span>{' '}
                   <span className={getScoreColor(result.verifications.network.trust_score)}>
@@ -214,9 +215,9 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
                   </span>
                 </p>
                 {result.verifications.network.circular_reporting?.circular && (
-                  <div className="bg-red-50 border border-red-200 rounded p-2 mt-2">
-                    <p className="text-red-700 font-medium">⚠️ Circular reporting detected</p>
-                    <p className="text-xs text-red-600 mt-1">
+                  <div className="border rounded p-2 mt-2" style={{ backgroundColor: '#f5e8e8', borderColor: '#b78383' }}>
+                    <p className="font-medium" style={{ color: '#8a3a3a' }}>⚠️ Circular reporting detected</p>
+                    <p className="text-xs mt-1" style={{ color: '#8a3a3a' }}>
                       Chain length: {result.verifications.network.circular_reporting.chain?.length || 0}
                     </p>
                   </div>
@@ -227,12 +228,12 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
 
           {/* Image Verification */}
           {result.verifications.image && (
-            <div className="border border-gray-200 rounded-lg p-4">
+            <div className="border rounded-lg p-4" style={{ backgroundColor: '#f5f1e8', borderColor: '#a69570' }}>
               <div className="flex items-center space-x-2 mb-3">
-                <Image className="w-5 h-5 text-green-600" />
-                <h4 className="font-semibold text-gray-900">Image Analysis</h4>
+                <Image className="w-5 h-5" style={{ color: '#5c4234' }} />
+                <h4 className="font-semibold" style={{ color: '#4a3728' }}>Image Analysis</h4>
               </div>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm" style={{ color: '#5c4234' }}>
                 <p>
                   <span className="font-medium">Confidence:</span>{' '}
                   <span className={getScoreColor(result.verifications.image.confidence)}>
@@ -240,14 +241,14 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
                   </span>
                 </p>
                 {result.verifications.image.is_stock_photo && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
-                    <p className="text-yellow-700">📸 Stock photo detected</p>
+                  <div className="border rounded p-2" style={{ backgroundColor: '#f0ede6', borderColor: '#d4c1a0' }}>
+                    <p style={{ color: '#5c4234' }}>📸 Stock photo detected</p>
                   </div>
                 )}
                 {result.verifications.image.metadata && (
                   <details className="mt-2">
-                    <summary className="cursor-pointer text-blue-600 hover:underline">View Metadata</summary>
-                    <pre className="mt-2 bg-gray-50 rounded p-2 text-xs overflow-auto">
+                    <summary className="cursor-pointer hover:underline" style={{ color: '#5c4234' }}>View Metadata</summary>
+                    <pre className="mt-2 rounded p-2 text-xs overflow-auto" style={{ backgroundColor: '#f5f1e8', color: '#5c4234' }}>
                       {JSON.stringify(result.verifications.image.metadata, null, 2)}
                     </pre>
                   </details>
@@ -286,11 +287,11 @@ const EnhancedVerification: React.FC<EnhancedVerificationProps> = ({
 
           {/* Flags */}
           {result.flags.length > 0 && (
-            <div className="border border-orange-200 bg-orange-50 rounded-lg p-4">
-              <h4 className="font-semibold text-orange-900 mb-2">Detection Flags</h4>
+            <div className="border rounded-lg p-4" style={{ backgroundColor: '#f0ede6', borderColor: '#d4c1a0' }}>
+              <h4 className="font-semibold mb-2" style={{ color: '#4a3728' }}>Detection Flags</h4>
               <div className="flex flex-wrap gap-2">
                 {result.flags.map((flag, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-orange-200 text-orange-800 rounded-full text-xs font-medium">
+                  <span key={idx} className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#d4c1a0', color: '#4a3728' }}>
                     {flag.replace(/_/g, ' ')}
                   </span>
                 ))}

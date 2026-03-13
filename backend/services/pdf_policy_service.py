@@ -17,8 +17,6 @@ import re
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 import logging
-from transformers import pipeline, BartTokenizer, BartForConditionalGeneration
-import torch
 from functools import lru_cache
 import hashlib
 
@@ -49,33 +47,11 @@ class PDFPolicyAnalyzer:
         }
     
     def initialize_models(self):
-        """Initialize AI models for summarization and sentiment analysis"""
-        try:
-            logger.info("🔄 Loading summarization model (BART-large-CNN)...")
-            
-            # Load model and tokenizer explicitly
-            model_name = "facebook/bart-large-cnn"
-            self.tokenizer = BartTokenizer.from_pretrained(model_name)
-            self.model = BartForConditionalGeneration.from_pretrained(model_name)
-            self.model.eval()  # Inference mode
-            
-            # Create pipeline
-            self.summarizer = pipeline(
-                "summarization", 
-                model=self.model,
-                tokenizer=self.tokenizer,
-                device=self.device,
-                framework="pt"
-            )
-            
-            logger.info("✅ Summarization model loaded successfully")
-            
-        except Exception as e:
-            logger.error(f"⚠️ Failed to load models: {e}")
-            logger.info("Will use fallback extractive summarization")
-            self.summarizer = None
-            self.tokenizer = None
-            self.model = None
+        """Skip heavy model downloads — use fast extractive summarization instead."""
+        logger.info("✅ PDF Policy Analyzer ready (extractive mode — no model download required)")
+        self.summarizer = None
+        self.tokenizer = None
+        self.model = None
     
     def extract_text_from_pdf(self, pdf_file) -> Tuple[str, Dict]:
         """Extract text from PDF file with metadata"""

@@ -4,7 +4,7 @@
 /* Main container */
 .policy-container {
   min-height: 100vh;
-  background: #fefdfb;
+  background: transparent;
   font-family: 'Georgia', serif;
 }
 
@@ -13,22 +13,87 @@
   text-align: center;
   padding: 2rem;
   border-bottom: 4px solid #000;
-  background: #fefdfb;
+  background: rgba(212, 193, 160, 0.3);
+  box-shadow: 0 2px 4px rgba(74, 55, 40, 0.2);
 }
 
 .policy-title {
   font-family: 'Playfair Display', serif;
   font-size: 3rem;
   font-weight: 900;
-  color: #000;
+  color: var(--vintage-ink, #4a3728);
   margin-bottom: 0.5rem;
 }
 
 .policy-subtitle {
   font-family: 'Georgia', serif;
   font-size: 1.125rem;
-  color: #333;
+  color: var(--vintage-ink-light, #5c4234);
   font-style: italic;
+}
+
+/* Scoped overrides so this page stays in classic newspaper style */
+.policy-container .newspaper-section,
+.policy-container .newspaper-card {
+  background: #f3ead8 !important;
+  border: 2px solid #1f1a14 !important;
+  box-shadow: 2px 2px 0 rgba(31, 26, 20, 0.28) !important;
+}
+
+.policy-container .newspaper-section::before,
+.policy-container .newspaper-card::before {
+  opacity: 0.25;
+}
+
+.policy-container .btn-primary {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 2px solid #111;
+  border-radius: 0;
+  background: #111;
+  color: #f7f1e6;
+  box-shadow: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.policy-container .btn-primary:hover {
+  background: #f7f1e6;
+  color: #111;
+}
+
+.policy-container .btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.policy-container .input-field {
+  border: 2px solid #1f1a14;
+  border-radius: 0;
+  background: #f7f1e6;
+  color: #1f1a14;
+  box-shadow: inset 0 1px 0 rgba(31, 26, 20, 0.1);
+}
+
+.policy-container .input-field:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .policy-header {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .policy-title {
+    font-size: 2rem;
+  }
+
+  .policy-subtitle {
+    font-size: 0.95rem;
+  }
 }
 
 /* Section containers */

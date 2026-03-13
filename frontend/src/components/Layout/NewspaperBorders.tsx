@@ -24,10 +24,10 @@ const NewspaperBorders: React.FC = () => {
         style={{ backgroundColor: "#faf8f3" }}
       >
         <div className="animate-scroll-right text-black font-bold text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap py-1.5 sm:py-2 font-serif">
-          📰 INFOSPHERE HERALD • ESTABLISHED 2025 • DIGITAL TRUTH VERIFICATION •
-          NEWS INTEGRITY PLATFORM • INFOSPHERE HERALD • ESTABLISHED 2025 •
+          📰 INFOSPHERE HERALD • DIGITAL TRUTH VERIFICATION •
+          NEWS INTEGRITY PLATFORM • INFOSPHERE HERALD •
           DIGITAL TRUTH VERIFICATION • NEWS INTEGRITY PLATFORM • INFOSPHERE
-          HERALD • ESTABLISHED 2025 • DIGITAL TRUTH VERIFICATION • NEWS
+          HERALD • DIGITAL TRUTH VERIFICATION • NEWS
           INTEGRITY PLATFORM •
         </div>
       </div>

@@ -96,12 +96,12 @@ const MySubmissions: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {items.slice().reverse().map((sub) => (
-              <div key={sub.id} className="p-4 border border-secondary-200 rounded bg-white">
+              <div key={sub.id} className="p-4 border-2 border-black bg-white">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="font-bold">{sub.title}</div>
-                    <div className="text-sm text-secondary-700">{sub.location}</div>
-                    {sub.saved_at && (<div className="text-xs text-secondary-500">Saved: {new Date(sub.saved_at).toLocaleString()}</div>)}
+                    <div className="font-black text-black" style={{ fontFamily: 'Playfair Display, Georgia, serif' }}>{sub.title}</div>
+                    <div className="text-sm text-black" style={{ fontFamily: 'Georgia, serif' }}>{sub.location}</div>
+                    {sub.saved_at && (<div className="text-xs text-black italic" style={{ fontFamily: 'Georgia, serif' }}>Saved: {new Date(sub.saved_at).toLocaleString()}</div>)}
                   </div>
                   <div className="flex gap-2">
                     {sub.offline && (
@@ -114,7 +114,7 @@ const MySubmissions: React.FC = () => {
                     <button className="btn-secondary" onClick={() => deleteItem(sub.id)}>Delete</button>
                   </div>
                 </div>
-                <div className="mt-2 text-sm text-secondary-800 whitespace-pre-wrap">
+                <div className="mt-2 text-sm text-black whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif' }}>
                   {sub.description}
                 </div>
               </div>
