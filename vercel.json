@@ -1,8 +1,8 @@
 {
   "version": 2,
   "name": "infosphere",
-  "buildCommand": "cd frontend && npm ci && npm run build",
-  "outputDirectory": "frontend/build",
+  "buildCommand": "npm ci && npm run build",
+  "outputDirectory": "build",
   "framework": "create-react-app",
   "rewrites": [
     {
