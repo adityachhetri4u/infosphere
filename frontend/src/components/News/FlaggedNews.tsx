@@ -31,7 +31,7 @@ interface FlaggedStats {
 }
 
 const LOW_CREDIBILITY_THRESHOLD = 0.62;
-const TARGET_FLAGGED_COUNT = 8;
+const TARGET_FLAGGED_COUNT = 9;
 
 const normalizeKey = (value: string): string =>
   (value || '')
@@ -46,155 +46,174 @@ const createFallbackFlaggedArticles = (): FlaggedArticle[] => {
   const now = Date.now();
   return [
     {
-      id: 900001,
-      title: 'Viral post claims citywide internet shutdown tonight without official notice',
-      url: 'https://example.com/fact-check/internet-shutdown-claim',
+      id: 910001,
+      title: 'Donald Trump "Fall" Hoax: Viral clip misattributed as recent Air Force One incident',
+      url: 'https://www.hindustantimes.com/world-news/donald-trump-fall-hoax-fact-check',
       flagged_at: new Date(now - 20 * 60 * 1000).toISOString(),
-      verification_score: 0.34,
-      flag_reasons: [
-        'No official source confirmation found',
-        'Headline shows classic panic wording',
-        'Claim appears in recycled social media forwards'
-      ],
-      checks_summary: {
-        source_check: { score: 0.26, status: 'not_found' },
-        date_check: { score: 0.44, status: 'moderate' },
-        consistency_check: { score: 0.31, status: 'unreliable' },
-        image_check: { score: 0.36, status: 'unknown' },
-        reputation_check: { score: 0.33, status: 'unreliable' }
-      }
-    },
-    {
-      id: 900002,
-      title: 'Unverified message says fuel prices will double from tomorrow morning',
-      url: 'https://example.com/fact-check/fuel-price-rumor',
-      flagged_at: new Date(now - 42 * 60 * 1000).toISOString(),
-      verification_score: 0.39,
-      flag_reasons: [
-        'No policy release from ministry websites',
-        'Screenshot metadata is inconsistent',
-        'Claim conflicts with latest public bulletin'
-      ],
-      checks_summary: {
-        source_check: { score: 0.28, status: 'not_found' },
-        date_check: { score: 0.51, status: 'moderate' },
-        consistency_check: { score: 0.35, status: 'unreliable' },
-        image_check: { score: 0.41, status: 'stock_photo' },
-        reputation_check: { score: 0.37, status: 'unreliable' }
-      }
-    },
-    {
-      id: 900003,
-      title: 'Edited video alleges election result already leaked before counting',
-      url: 'https://example.com/fact-check/election-leak-video',
-      flagged_at: new Date(now - 58 * 60 * 1000).toISOString(),
       verification_score: 0.29,
       flag_reasons: [
-        'Video timeline does not match event schedule',
-        'Audio track appears spliced from another clip',
-        'Primary source account has low trust history'
+        'Video context was misattributed to a recent event',
+        'Claim contradicted by reported on-ground timeline',
+        'Social media amplification without primary confirmation'
       ],
       checks_summary: {
-        source_check: { score: 0.22, status: 'unreliable' },
-        date_check: { score: 0.38, status: 'future_dated' },
-        consistency_check: { score: 0.27, status: 'debunked' },
-        image_check: { score: 0.34, status: 'moderate' },
+        source_check: { score: 0.32, status: 'moderate' },
+        date_check: { score: 0.26, status: 'future_dated' },
+        consistency_check: { score: 0.24, status: 'debunked' },
+        image_check: { score: 0.35, status: 'unknown' },
+        reputation_check: { score: 0.27, status: 'unreliable' }
+      }
+    },
+    {
+      id: 910002,
+      title: 'India-Israel Defense Facility Fire Rumour in Delhi Debunked by MEA and News On AIR',
+      url: 'https://newsonair.gov.in/fact-check',
+      flagged_at: new Date(now - 30 * 60 * 1000).toISOString(),
+      verification_score: 0.18,
+      flag_reasons: [
+        'Official government channels marked claim as false',
+        'No corroboration from verified emergency records',
+        'Narrative spread via unverified forwarded posts'
+      ],
+      checks_summary: {
+        source_check: { score: 0.20, status: 'debunked' },
+        date_check: { score: 0.30, status: 'moderate' },
+        consistency_check: { score: 0.18, status: 'debunked' },
+        image_check: { score: 0.28, status: 'unknown' },
+        reputation_check: { score: 0.22, status: 'unreliable' }
+      }
+    },
+    {
+      id: 910003,
+      title: 'Attack on Haifa Port Rumour: No visible damage confirmed by on-ground reporting',
+      url: 'https://www.ndtv.com/world-news',
+      flagged_at: new Date(now - 40 * 60 * 1000).toISOString(),
+      verification_score: 0.25,
+      flag_reasons: [
+        'Claim not supported by field reporting',
+        'No physical evidence of stated infrastructure damage',
+        'Posts reused old/confusing visuals'
+      ],
+      checks_summary: {
+        source_check: { score: 0.27, status: 'moderate' },
+        date_check: { score: 0.31, status: 'moderate' },
+        consistency_check: { score: 0.23, status: 'debunked' },
+        image_check: { score: 0.29, status: 'stock_photo' },
+        reputation_check: { score: 0.24, status: 'unreliable' }
+      }
+    },
+    {
+      id: 910004,
+      title: 'Death of Mojtaba Khamenei Viral Claim Debunked as False',
+      url: 'https://www.ndtv.com/world-news',
+      flagged_at: new Date(now - 50 * 60 * 1000).toISOString(),
+      verification_score: 0.21,
+      flag_reasons: [
+        'No confirmation from official or credible diplomatic sources',
+        'Claim circulated through anonymous handles',
+        'Cross-source verification failed'
+      ],
+      checks_summary: {
+        source_check: { score: 0.22, status: 'not_found' },
+        date_check: { score: 0.34, status: 'moderate' },
+        consistency_check: { score: 0.20, status: 'debunked' },
+        image_check: { score: 0.30, status: 'unknown' },
+        reputation_check: { score: 0.23, status: 'unreliable' }
+      }
+    },
+    {
+      id: 910005,
+      title: 'Forged CBSE Circular on Middle East Class 12 English Exam Reschedule',
+      url: 'https://timesofindia.indiatimes.com/education',
+      flagged_at: new Date(now - 65 * 60 * 1000).toISOString(),
+      verification_score: 0.24,
+      flag_reasons: [
+        'Circular format did not match official board communication',
+        'Board clarification contradicted circulated notice',
+        'Document provenance unverified'
+      ],
+      checks_summary: {
+        source_check: { score: 0.26, status: 'moderate' },
+        date_check: { score: 0.33, status: 'moderate' },
+        consistency_check: { score: 0.22, status: 'debunked' },
+        image_check: { score: 0.27, status: 'unknown' },
         reputation_check: { score: 0.25, status: 'unreliable' }
       }
     },
     {
-      id: 900004,
-      title: 'Anonymous blog claims emergency bank holiday announced nationwide',
-      url: 'https://example.com/fact-check/bank-holiday-rumor',
-      flagged_at: new Date(now - 75 * 60 * 1000).toISOString(),
-      verification_score: 0.42,
+      id: 910006,
+      title: 'CBSE 2026 Paper Leak Rumours: Official channels advised students to ignore',
+      url: 'https://www.cbse.gov.in',
+      flagged_at: new Date(now - 80 * 60 * 1000).toISOString(),
+      verification_score: 0.23,
       flag_reasons: [
-        'Article cites no official circular number',
-        'Publication domain is recently created',
-        'Similar rumor previously marked false'
+        'Official board channels rejected leak claims',
+        'Rumour posts lacked verifiable evidence',
+        'High virality with low source credibility'
       ],
       checks_summary: {
-        source_check: { score: 0.31, status: 'unreliable' },
-        date_check: { score: 0.55, status: 'moderate' },
-        consistency_check: { score: 0.39, status: 'unreliable' },
-        image_check: { score: 0.49, status: 'unknown' },
-        reputation_check: { score: 0.36, status: 'unreliable' }
+        source_check: { score: 0.24, status: 'debunked' },
+        date_check: { score: 0.36, status: 'moderate' },
+        consistency_check: { score: 0.21, status: 'debunked' },
+        image_check: { score: 0.32, status: 'unknown' },
+        reputation_check: { score: 0.24, status: 'unreliable' }
       }
     },
     {
-      id: 900005,
-      title: 'Forwarded screenshot says schools closed for two weeks without district order',
-      url: 'https://example.com/fact-check/school-closure-forward',
+      id: 910007,
+      title: 'LPG Shortage Rumour in India: Authorities say distribution is normal',
+      url: 'https://pib.gov.in',
       flagged_at: new Date(now - 95 * 60 * 1000).toISOString(),
-      verification_score: 0.37,
+      verification_score: 0.28,
       flag_reasons: [
-        'District website has no closure notice',
-        'Image typography differs from official format',
-        'No corroboration from trusted local media'
+        'Supply-crisis claim contradicted by official clarification',
+        'Forwarded messages lacked verifiable logistics data',
+        'No supporting evidence from authorized distributors'
       ],
       checks_summary: {
-        source_check: { score: 0.30, status: 'not_found' },
-        date_check: { score: 0.47, status: 'moderate' },
-        consistency_check: { score: 0.34, status: 'unreliable' },
-        image_check: { score: 0.32, status: 'stock_photo' },
-        reputation_check: { score: 0.40, status: 'unknown' }
+        source_check: { score: 0.30, status: 'moderate' },
+        date_check: { score: 0.40, status: 'moderate' },
+        consistency_check: { score: 0.26, status: 'debunked' },
+        image_check: { score: 0.34, status: 'unknown' },
+        reputation_check: { score: 0.29, status: 'unreliable' }
       }
     },
     {
-      id: 900006,
-      title: 'Unattributed report claims major bridge already declared unsafe for traffic',
-      url: 'https://example.com/fact-check/bridge-safety-rumor',
-      flagged_at: new Date(now - 110 * 60 * 1000).toISOString(),
-      verification_score: 0.46,
+      id: 910008,
+      title: 'Fake Kerala Lottery Website Using Official Emblems Under Probe',
+      url: 'https://cybercrime.gov.in',
+      flagged_at: new Date(now - 115 * 60 * 1000).toISOString(),
+      verification_score: 0.34,
       flag_reasons: [
-        'Engineering authority has not issued an alert',
-        'Supporting photo is from another country',
-        'Source account repeatedly posts misinformation'
+        'Website identity spoofed official branding',
+        'Fraud indicators present in domain and payment flow',
+        'Police/cyber authorities initiated investigation'
       ],
       checks_summary: {
-        source_check: { score: 0.35, status: 'unreliable' },
-        date_check: { score: 0.58, status: 'moderate' },
-        consistency_check: { score: 0.41, status: 'unreliable' },
-        image_check: { score: 0.37, status: 'stock_photo' },
-        reputation_check: { score: 0.38, status: 'unreliable' }
+        source_check: { score: 0.36, status: 'moderate' },
+        date_check: { score: 0.46, status: 'moderate' },
+        consistency_check: { score: 0.31, status: 'unreliable' },
+        image_check: { score: 0.38, status: 'unknown' },
+        reputation_check: { score: 0.33, status: 'unreliable' }
       }
     },
     {
-      id: 900007,
-      title: 'Claim that health advisory was cancelled appears without department document',
-      url: 'https://example.com/fact-check/health-advisory-cancelled',
-      flagged_at: new Date(now - 130 * 60 * 1000).toISOString(),
-      verification_score: 0.41,
+      id: 910009,
+      title: 'Wrestler Visa Forgery: Fake WFI Recommendation Letters Used for Budapest Event',
+      url: 'https://wrestlingfederationofindia.com',
+      flagged_at: new Date(now - 135 * 60 * 1000).toISOString(),
+      verification_score: 0.31,
       flag_reasons: [
-        'No matching advisory update on official portals',
-        'Text inconsistencies across copied posts',
-        'Original uploader identity is unverified'
+        'Embassy verification identified forged recommendation letters',
+        'Issuing body denied authenticity of submitted documents',
+        'Identity/document chain failed verification checks'
       ],
       checks_summary: {
-        source_check: { score: 0.29, status: 'not_found' },
-        date_check: { score: 0.60, status: 'moderate' },
-        consistency_check: { score: 0.36, status: 'unreliable' },
-        image_check: { score: 0.45, status: 'unknown' },
-        reputation_check: { score: 0.35, status: 'unreliable' }
-      }
-    },
-    {
-      id: 900008,
-      title: 'Post says airport terminal closed immediately but no notice from aviation authority',
-      url: 'https://example.com/fact-check/airport-terminal-closure-claim',
-      flagged_at: new Date(now - 150 * 60 * 1000).toISOString(),
-      verification_score: 0.33,
-      flag_reasons: [
-        'Aviation authority feed shows no closure notice',
-        'Video clip appears old and context-mismatched',
-        'Cross-source validation fails on key details'
-      ],
-      checks_summary: {
-        source_check: { score: 0.24, status: 'not_found' },
-        date_check: { score: 0.42, status: 'future_dated' },
-        consistency_check: { score: 0.30, status: 'debunked' },
-        image_check: { score: 0.39, status: 'stock_photo' },
-        reputation_check: { score: 0.31, status: 'unreliable' }
+        source_check: { score: 0.33, status: 'moderate' },
+        date_check: { score: 0.42, status: 'moderate' },
+        consistency_check: { score: 0.29, status: 'debunked' },
+        image_check: { score: 0.35, status: 'unknown' },
+        reputation_check: { score: 0.30, status: 'unreliable' }
       }
     }
   ];
@@ -319,7 +338,7 @@ const FlaggedNews: React.FC = () => {
         return !isDuplicateLive;
       });
 
-      const combined = [...apiLowCredibility, ...mappedLowFromLive, ...fallbackArticles];
+      const combined = [...fallbackArticles, ...apiLowCredibility, ...mappedLowFromLive];
       const uniqueByTitle = new Map<string, FlaggedArticle>();
 
       for (const article of combined) {
@@ -331,7 +350,6 @@ const FlaggedNews: React.FC = () => {
 
       const finalArticles = Array.from(uniqueByTitle.values())
         .filter((article) => article.verification_score <= LOW_CREDIBILITY_THRESHOLD)
-        .sort((a, b) => a.verification_score - b.verification_score)
         .slice(0, TARGET_FLAGGED_COUNT);
 
       setFlaggedArticles(finalArticles);

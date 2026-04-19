@@ -89,7 +89,7 @@
     --paper-crease: rgba(166,149,112,0.3);
     --paper-age-spot: rgba(192,168,130,0.6);
     --paper-fade: rgba(212,193,160,0.8);
-    --page-bg-image: url('./assets/newspaper_bg.png');
+    --page-bg-image: none;
   }
 
   .btn-primary {

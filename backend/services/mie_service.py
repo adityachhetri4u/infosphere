@@ -14,6 +14,7 @@ import time
 import hashlib
 from typing import Dict, Any, Optional
 from PIL import Image
+from PIL.ExifTags import TAGS
 import numpy as np
 import cv2
 import torch
@@ -189,7 +190,8 @@ class MIEService:
             artifacts_score = self._analyze_visual_artifacts(img_array)
             
             # Analyze metadata (placeholder implementation) 
-            metadata_score = self._analyze_metadata(image_data)
+            metadata_analysis = self._analyze_metadata(image_data, filename)
+            metadata_score = metadata_analysis["metadata_score"]
             
             # Combine scores
             final_trust_score = int(
@@ -212,10 +214,7 @@ class MIEService:
                     "artifacts_score": artifacts_score,
                     "artifacts_detected": artifacts_score < 70
                 },
-                "metadata_analysis": {
-                    "metadata_score": metadata_score,
-                    "suspicious_metadata": metadata_score < 70
-                },
+                "metadata_analysis": metadata_analysis,
                 "recommendations": self._generate_recommendations(final_trust_score, confidence),
                 "processing_time": processing_time
             }
@@ -393,30 +392,151 @@ class MIEService:
         except:
             return 50  # Default score if analysis fails
     
-    def _analyze_metadata(self, image_data: bytes) -> int:
+    def _analyze_metadata(self, image_data: bytes, filename: str = "") -> Dict[str, Any]:
         """
         Analyze image metadata for signs of manipulation.
-        
-        Placeholder implementation - would include:
-        - EXIF data analysis
-        - Creation timestamp validation
-        - Software signature analysis
-        - GPS data consistency
+
+        Returns a structured metadata report including:
+        - metadata_score (0-100, higher means more likely genuine)
+        - AI generation likelihood
+        - verdict: likely genuine / likely AI-generated / inconclusive
         """
-        # Simple implementation based on file size and basic properties
+        ai_hints = []
+        genuine_hints = []
+        ai_probability = 0.35  # neutral prior
+
+        ai_tool_signatures = [
+            "midjourney", "dall-e", "stable diffusion", "comfyui", "dreamstudio",
+            "adobe firefly", "generative fill", "leonardo", "ideogram", "nightcafe",
+            "runway", "sora", "bing image creator"
+        ]
+
         try:
             file_size = len(image_data)
-            
-            # Basic heuristics (placeholder logic)
-            if file_size < 10000:  # Very small file might be suspicious
-                return 30
-            elif file_size > 5000000:  # Very large file might be uncompressed/manipulated
-                return 40
+
+            image = Image.open(io.BytesIO(image_data))
+            exif = image.getexif() if hasattr(image, "getexif") else None
+
+            exif_map: Dict[str, str] = {}
+            if exif:
+                for tag_id, value in exif.items():
+                    tag_name = TAGS.get(tag_id, str(tag_id))
+                    exif_map[str(tag_name)] = str(value)
+
+            has_exif = len(exif_map) > 0
+            software = exif_map.get("Software", "")
+            make = exif_map.get("Make", "")
+            model = exif_map.get("Model", "")
+            date_original = (
+                exif_map.get("DateTimeOriginal") or
+                exif_map.get("DateTime") or
+                exif_map.get("CreateDate")
+            )
+
+            if not has_exif:
+                ai_probability += 0.20
+                ai_hints.append("No EXIF metadata found")
             else:
-                return 80  # Normal size range
-                
-        except:
-            return 50
+                genuine_hints.append("EXIF metadata is present")
+
+            if make:
+                ai_probability -= 0.12
+                genuine_hints.append(f"Camera make present: {make}")
+            if model:
+                ai_probability -= 0.10
+                genuine_hints.append(f"Camera model present: {model}")
+
+            if software:
+                lowered_software = software.lower()
+                if any(sig in lowered_software for sig in ai_tool_signatures):
+                    ai_probability += 0.55
+                    ai_hints.append(f"Software tag indicates AI tool: {software}")
+                elif any(sig in lowered_software for sig in ["photoshop", "lightroom", "gimp"]):
+                    ai_probability += 0.15
+                    ai_hints.append(f"Software tag indicates post-processing: {software}")
+                else:
+                    genuine_hints.append(f"Software tag present: {software}")
+
+            if filename and any(token in filename.lower() for token in ["ai", "generated", "synthetic", "midjourney"]):
+                ai_probability += 0.20
+                ai_hints.append("Filename contains synthetic/AI marker keywords")
+
+            if file_size < 10_000:
+                ai_probability += 0.15
+                ai_hints.append("Very small file size for photo content")
+            elif 100_000 <= file_size <= 8_000_000:
+                genuine_hints.append("File size falls in typical camera-export range")
+
+            if date_original:
+                try:
+                    normalized = date_original.replace("-", ":")
+                    parsed = None
+                    for fmt in ["%Y:%m:%d %H:%M:%S", "%Y:%m:%d %H:%M"]:
+                        try:
+                            parsed = time.strptime(normalized, fmt)
+                            break
+                        except Exception:
+                            continue
+                    if parsed:
+                        # If timestamp exists and is parseable, treat as mild genuine signal
+                        ai_probability -= 0.08
+                        genuine_hints.append("Capture timestamp metadata is present")
+                except Exception:
+                    pass
+
+            ai_probability = max(0.02, min(0.98, ai_probability))
+            metadata_score = int((1.0 - ai_probability) * 100)
+
+            if ai_probability >= 0.65:
+                verdict = "Likely AI-Generated"
+            elif ai_probability <= 0.45:
+                verdict = "Likely Genuine"
+            else:
+                verdict = "Inconclusive"
+
+            confidence = min(0.95, 0.45 + 0.08 * max(len(ai_hints), len(genuine_hints)))
+
+            return {
+                "metadata_score": metadata_score,
+                "suspicious_metadata": ai_probability >= 0.55,
+                "verdict": verdict,
+                "ai_generated_probability": round(ai_probability, 3),
+                "confidence": round(confidence, 3),
+                "exif_summary": {
+                    "has_exif": has_exif,
+                    "software": software or None,
+                    "camera_make": make or None,
+                    "camera_model": model or None,
+                    "capture_time": date_original or None,
+                    "width": image.width,
+                    "height": image.height,
+                    "file_size_bytes": file_size
+                },
+                "ai_indicators": ai_hints,
+                "genuine_indicators": genuine_hints
+            }
+
+        except Exception as e:
+            logger.warning(f"Metadata analysis failed: {e}")
+            return {
+                "metadata_score": 50,
+                "suspicious_metadata": True,
+                "verdict": "Inconclusive",
+                "ai_generated_probability": 0.5,
+                "confidence": 0.3,
+                "exif_summary": {
+                    "has_exif": False,
+                    "software": None,
+                    "camera_make": None,
+                    "camera_model": None,
+                    "capture_time": None,
+                    "width": None,
+                    "height": None,
+                    "file_size_bytes": len(image_data) if image_data else 0
+                },
+                "ai_indicators": ["Unable to read metadata"],
+                "genuine_indicators": []
+            }
     
     def _calculate_temporal_consistency(self, frame_scores: list) -> float:
         """

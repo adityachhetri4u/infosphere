@@ -8,6 +8,7 @@ from services.mie_service import MIEService
 
 router = APIRouter()
 
+@router.post("/media/verify")
 @router.post("/verify")
 async def verify_media(
     file: UploadFile = File(...),
@@ -55,6 +56,7 @@ async def verify_media(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error verifying media: {str(e)}")
 
+@router.get("/media/verify/{verification_id}")
 @router.get("/verify/{verification_id}")
 async def get_verification_result(verification_id: str):
     """
@@ -74,6 +76,7 @@ async def get_verification_result(verification_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving verification: {str(e)}")
 
+@router.post("/media/batch_verify")
 @router.post("/batch_verify")
 async def batch_verify_media(
     files: list[UploadFile] = File(...)
@@ -127,6 +130,7 @@ async def batch_verify_media(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in batch verification: {str(e)}")
 
+@router.get("/media/stats")
 @router.get("/stats")
 async def get_verification_stats():
     """

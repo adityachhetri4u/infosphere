@@ -1,0 +1,265 @@
+/* Flagged News visuals: strong risk-focused palette and readable hierarchy. */
+
+.flagged-news-page {
+   color: #1e1e1e;
+}
+
+.flagged-masthead {
+   background: linear-gradient(90deg, #fff7f7 0%, #fffdf5 100%);
+   border: 2px solid #111;
+   padding: 0.75rem;
+}
+
+.flagged-main-title {
+   color: #7f1d1d;
+   letter-spacing: 0.04em;
+}
+
+.flagged-main-icon {
+   color: #b91c1c;
+}
+
+.flagged-subline {
+   text-align: center;
+   color: #7a1f1f;
+   font-weight: 600;
+   letter-spacing: 0.08em;
+   margin-top: 0.35rem;
+}
+
+.flagged-tagline {
+   color: #5f4747;
+}
+
+.flagged-stat-card {
+   border: 2px solid #111;
+   padding: 0.75rem;
+   min-height: 130px;
+}
+
+.flagged-stat-label {
+   font-size: 0.8rem;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
+   margin-bottom: 0.3rem;
+}
+
+.flagged-stat-value {
+   font-size: 1.7rem;
+   line-height: 1;
+   margin-bottom: 0.35rem;
+}
+
+.flagged-stat-meta {
+   color: #5f4747;
+   font-size: 0.9rem;
+}
+
+.flagged-stat-reason {
+   font-size: 1rem;
+   line-height: 1.2;
+   color: #2f2f2f;
+}
+
+.stat-critical {
+   background: #fee2e2;
+   border-color: #b91c1c;
+}
+
+.stat-critical .flagged-stat-label,
+.stat-critical .flagged-stat-value {
+   color: #991b1b;
+}
+
+.stat-watch {
+   background: #ffedd5;
+   border-color: #c2410c;
+}
+
+.stat-watch .flagged-stat-label,
+.stat-watch .flagged-stat-value {
+   color: #9a3412;
+}
+
+.stat-muted {
+   background: #f3f4f6;
+   border-color: #6b7280;
+}
+
+.flagged-reason-row {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 0.75rem;
+   border: 1px solid #d4d4d8;
+   background: #fff;
+   padding: 0.5rem 0.75rem;
+}
+
+.flagged-reason-text {
+   color: #2f2f2f;
+}
+
+.flagged-reason-count {
+   font-weight: 700;
+   color: #9a3412;
+   white-space: nowrap;
+}
+
+.flagged-article-wrap {
+   border: 2px solid #2b2b2b;
+   background: linear-gradient(180deg, #fffefe 0%, #fff9f4 100%);
+   padding: 1rem;
+}
+
+.flagged-article-head {
+   display: flex;
+   justify-content: space-between;
+   gap: 0.8rem;
+   border-bottom: 1px solid #d6d3d1;
+   padding-bottom: 0.75rem;
+   margin-bottom: 0.85rem;
+}
+
+.flagged-article-title {
+   color: #2b1f1f;
+   line-height: 1.25;
+}
+
+.flagged-article-link {
+   display: inline-block;
+   margin-top: 0.35rem;
+   color: #7f1d1d;
+   text-decoration: underline;
+   word-break: break-word;
+}
+
+.flagged-article-link:hover {
+   color: #b91c1c;
+}
+
+.flagged-score {
+   min-width: 78px;
+   text-align: center;
+   border: 2px solid currentColor;
+   padding: 0.2rem 0.55rem;
+   font-weight: 800;
+   font-size: 1.1rem;
+   line-height: 1.1;
+   background: #fff;
+}
+
+.score-verified {
+   color: #166534;
+   background: #dcfce7;
+}
+
+.score-watch {
+   color: #9a3412;
+   background: #ffedd5;
+}
+
+.score-caution {
+   color: #a16207;
+   background: #fef3c7;
+}
+
+.score-flagged {
+   color: #991b1b;
+   background: #fee2e2;
+}
+
+.flagged-timestamp {
+   color: #5b3e3e;
+   white-space: nowrap;
+}
+
+.flagged-body-grid {
+   display: grid;
+   grid-template-columns: 1.2fr 1.8fr;
+   gap: 0.85rem;
+}
+
+.flagged-reasons-panel,
+.flagged-checks-panel {
+   border: 1px solid #d4d4d8;
+   background: #fff;
+   padding: 0.75rem;
+}
+
+.flagged-panel-title {
+   color: #7f1d1d;
+   margin-bottom: 0.5rem;
+}
+
+.flagged-bullet-row {
+   display: flex;
+   gap: 0.45rem;
+   align-items: flex-start;
+}
+
+.flagged-bullet {
+   color: #b91c1c;
+   font-size: 0.72rem;
+   margin-top: 0.28rem;
+}
+
+.flagged-reason-item {
+   color: #2f2f2f;
+}
+
+.flagged-check-item {
+   border: 1px solid #d4d4d8;
+   background: #fafaf9;
+   padding: 0.5rem;
+}
+
+.flagged-check-name {
+   text-transform: capitalize;
+   font-size: 0.8rem;
+   color: #44403c;
+   margin-bottom: 0.35rem;
+}
+
+.flagged-status {
+   display: inline-block;
+   font-weight: 700;
+   font-size: 0.82rem;
+   padding: 0.15rem 0.35rem;
+   border: 1px solid currentColor;
+   background: #fff;
+}
+
+.status-verified {
+   color: #166534;
+   background: #dcfce7;
+}
+
+.status-watch {
+   color: #9a3412;
+   background: #ffedd5;
+}
+
+.status-critical {
+   color: #991b1b;
+   background: #fee2e2;
+}
+
+.status-muted {
+   color: #334155;
+   background: #e2e8f0;
+}
+
+@media (max-width: 920px) {
+   .flagged-body-grid {
+      grid-template-columns: 1fr;
+   }
+
+   .flagged-article-head {
+      flex-direction: column;
+   }
+
+   .flagged-timestamp {
+      white-space: normal;
+   }
+}

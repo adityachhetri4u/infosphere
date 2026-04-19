@@ -3,6 +3,26 @@ import api from '../../utils/api';
 import NewspaperBorders from '../Layout/NewspaperBorders';
 import { ENABLE_NEWSPAPER_BORDERS } from '../../utils/newspaperBorders';
 
+interface MetadataAnalysisResult {
+  metadata_score: number;
+  suspicious_metadata: boolean;
+  verdict?: 'Likely Genuine' | 'Likely AI-Generated' | 'Inconclusive' | string;
+  ai_generated_probability?: number;
+  confidence?: number;
+  exif_summary?: {
+    has_exif?: boolean;
+    software?: string | null;
+    camera_make?: string | null;
+    camera_model?: string | null;
+    capture_time?: string | null;
+    width?: number | null;
+    height?: number | null;
+    file_size_bytes?: number | null;
+  };
+  ai_indicators?: string[];
+  genuine_indicators?: string[];
+}
+
 interface MediaVerificationResult {
   trust_score: number;
   confidence: number;
@@ -10,7 +30,7 @@ interface MediaVerificationResult {
     face_detection: any;
     temporal_consistency?: any;
     visual_artifacts: any;
-    metadata_analysis: any;
+    metadata_analysis: MetadataAnalysisResult;
   };
   recommendations: string[];
   processing_time: number;
@@ -73,6 +93,7 @@ const EnhancedMediaVerification: React.FC = () => {
   const [mediaResult, setMediaResult] = useState<MediaVerificationResult | null>(null);
   const [textResult, setTextResult] = useState<ATIEResult | null>(null);
   const [compositeResult, setCompositeResult] = useState<CompositeResult | null>(null);
+  const [metadataToolResult, setMetadataToolResult] = useState<MetadataAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [docReport, setDocReport] = useState<any>(null);
 
@@ -80,6 +101,7 @@ const EnhancedMediaVerification: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setMetadataToolResult(null);
       resetResults();
 
       // Auto-detect media type
@@ -104,6 +126,7 @@ const EnhancedMediaVerification: React.FC = () => {
     setMediaResult(null);
     setTextResult(null);
     setCompositeResult(null);
+    setMetadataToolResult(null);
     setError(null);
   };
 
@@ -123,6 +146,29 @@ const EnhancedMediaVerification: React.FC = () => {
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Media analysis failed');
+    }
+  };
+
+  const handleMetadataCheck = async () => {
+    if (!selectedFile) {
+      setError('Please upload an image to run metadata check');
+      return;
+    }
+    if (mediaType !== 'image') {
+      setError('Metadata check is available for images only');
+      return;
+    }
+
+    try {
+      setIsAnalyzing(true);
+      setError(null);
+      const mediaAnalysis = await handleMediaAnalysis();
+      setMediaResult(mediaAnalysis);
+      setMetadataToolResult(mediaAnalysis?.analysis_details?.metadata_analysis || null);
+    } catch (err: any) {
+      setError(err.message || 'Metadata check failed');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -223,6 +269,7 @@ const EnhancedMediaVerification: React.FC = () => {
           }
           const mediaResult = await handleMediaAnalysis();
           setMediaResult(mediaResult);
+          setMetadataToolResult(mediaResult?.analysis_details?.metadata_analysis || null);
           break;
 
         case 'text':
@@ -275,9 +322,65 @@ const EnhancedMediaVerification: React.FC = () => {
     </div>
   );
 
+  const renderMetadataTool = (metadata: MetadataAnalysisResult) => (
+    <div className="newspaper-section mb-4">
+      <h2 className="newspaper-section-title text-xl font-black text-black border-b-2 border-black pb-2 mb-4 uppercase tracking-wide">Image Metadata Authenticity Tool</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="border-2 border-black bg-white p-4 text-center">
+          <div className="text-xs font-black text-black uppercase tracking-wider">Verdict</div>
+          <div className={`mt-2 text-lg font-black ${metadata.verdict === 'Likely Genuine' ? 'text-green-700' : metadata.verdict === 'Likely AI-Generated' ? 'text-red-700' : 'text-yellow-700'}`}>
+            {metadata.verdict || 'Inconclusive'}
+          </div>
+        </div>
+        <div className="border-2 border-black bg-white p-4 text-center">
+          <div className="text-xs font-black text-black uppercase tracking-wider">AI Probability</div>
+          <div className="mt-2 text-lg font-black text-black">
+            {typeof metadata.ai_generated_probability === 'number'
+              ? `${Math.round(metadata.ai_generated_probability * 100)}%`
+              : 'N/A'}
+          </div>
+        </div>
+        <div className="border-2 border-black bg-white p-4 text-center">
+          <div className="text-xs font-black text-black uppercase tracking-wider">Metadata Score</div>
+          <div className="mt-2 text-lg font-black text-black">{Math.round(metadata.metadata_score || 0)}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="border-2 border-black bg-[#f5eed9] p-4">
+          <h4 className="text-sm font-black text-black uppercase tracking-wide mb-2">Metadata Summary</h4>
+          <div className="space-y-1 text-sm text-black italic-content">
+            <div>EXIF Present: <span className="font-bold">{metadata.exif_summary?.has_exif ? 'Yes' : 'No'}</span></div>
+            <div>Camera: <span className="font-bold">{`${metadata.exif_summary?.camera_make || '-'} ${metadata.exif_summary?.camera_model || ''}`.trim() || '-'}</span></div>
+            <div>Software: <span className="font-bold">{metadata.exif_summary?.software || '-'}</span></div>
+            <div>Capture Time: <span className="font-bold">{metadata.exif_summary?.capture_time || '-'}</span></div>
+            <div>Resolution: <span className="font-bold">{metadata.exif_summary?.width && metadata.exif_summary?.height ? `${metadata.exif_summary?.width} x ${metadata.exif_summary?.height}` : '-'}</span></div>
+          </div>
+        </div>
+
+        <div className="border-2 border-black bg-[#f5eed9] p-4">
+          <h4 className="text-sm font-black text-black uppercase tracking-wide mb-2">Indicators</h4>
+          <div className="space-y-2 text-sm italic-content">
+            {(metadata.ai_indicators || []).slice(0, 3).map((hint, idx) => (
+              <div key={`ai-${idx}`} className="text-red-700 font-semibold">• {hint}</div>
+            ))}
+            {(metadata.genuine_indicators || []).slice(0, 3).map((hint, idx) => (
+              <div key={`gen-${idx}`} className="text-green-700 font-semibold">• {hint}</div>
+            ))}
+            {(!metadata.ai_indicators?.length && !metadata.genuine_indicators?.length) && (
+              <div className="text-black font-semibold">• No strong metadata indicators detected</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderMediaAnalysis = (result: MediaVerificationResult) => (
     <div className="space-y-4">
       {renderTrustScore(result.trust_score, 'Media Integrity Score')}
+      {result.analysis_details?.metadata_analysis && renderMetadataTool(result.analysis_details.metadata_analysis)}
       
       <div className="bg-white rounded-lg border border-secondary-200 p-4">
         <h4 className="font-semibold text-secondary-900 mb-3">Analysis Details</h4>
@@ -539,6 +642,7 @@ const EnhancedMediaVerification: React.FC = () => {
                   type="file"
                   accept={mediaType === 'image' ? 'image/*' : 'video/*'}
                   onChange={handleFileSelect}
+                  title="Choose media file for verification"
                   className="input-field"
                 />
               </div>
@@ -546,10 +650,20 @@ const EnhancedMediaVerification: React.FC = () => {
               {selectedFile && (
                 <div className="bg-[#f5eed9] p-3 border-2 border-black">
                   <p className="font-black text-black">{selectedFile.name}</p>
-                  <p className="text-sm text-black" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                  <p className="text-sm text-black italic-content">
                     {(selectedFile.size / 1024 / 1024).toFixed(2)} MB • {selectedFile.type}
                   </p>
                 </div>
+              )}
+
+              {mediaType === 'image' && (
+                <button
+                  onClick={handleMetadataCheck}
+                  disabled={isAnalyzing || !selectedFile}
+                  className="w-full bg-white text-black font-black uppercase tracking-wide px-4 py-3 border-2 border-black hover:bg-gray-100 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  🧪 Check Image Metadata (Genuine vs AI)
+                </button>
               )}
             </div>
           </div>
@@ -585,7 +699,7 @@ const EnhancedMediaVerification: React.FC = () => {
                   rows={8}
                   className="input-field"
                 />
-                <div className="text-sm text-black mt-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                <div className="text-sm text-black mt-1 italic-content">
                   {textContent.length} characters
                 </div>
               </div>
@@ -600,9 +714,9 @@ const EnhancedMediaVerification: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div className="md:col-span-2">
             <label className="block text-sm font-black text-black mb-2 uppercase tracking-wide">Upload PDF or TXT</label>
-            <input type="file" accept="application/pdf,text/plain,.txt" onChange={handleDocumentSelect} className="input-field" />
+            <input type="file" accept="application/pdf,text/plain,.txt" onChange={handleDocumentSelect} title="Choose PDF or TXT document for fact-checking" className="input-field" />
             {documentFile && (
-              <div className="text-xs text-black font-bold mt-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>{documentFile.name}</div>
+              <div className="text-xs text-black font-bold mt-1 italic-content">{documentFile.name}</div>
             )}
           </div>
           <button
@@ -644,6 +758,7 @@ const EnhancedMediaVerification: React.FC = () => {
       )}
 
       {/* Results Display */}
+      {metadataToolResult && analysisType !== 'media' && renderMetadataTool(metadataToolResult)}
       {mediaResult && analysisType === 'media' && renderMediaAnalysis(mediaResult)}
       {docReport && (
         <div className="bg-white rounded-lg border border-secondary-200 p-4 mb-4">
